@@ -6,8 +6,6 @@ using static Utilities;
 public class PlayerMovementManager : Singleton<PlayerMovementManager>
 {
     #region COMPONENTS
-    [Header("COMPONENTS")]
-    [SerializeField] private Animator _graphAnimator;
     private ControlsMap _controlsMap;
     private CharacterController _controller;
     #endregion
@@ -15,9 +13,9 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
     #region VARIABLES
     private PlayerBehaviorState _currentBehavior = PlayerBehaviorState.IDLE;
     private Vector2 _movementDirection;
-
     #region ACCESSORS
     public Vector2 MovementDirection { get => _movementDirection; }
+    public PlayerBehaviorState CurrentBehavior { get => _currentBehavior; set => _currentBehavior = value; }
     #endregion
     #endregion
 
@@ -61,7 +59,6 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
         if (_currentBehavior == PlayerBehaviorState.MOVE)
         {
             _controller.Move(new Vector3(_movementDirection.x, -_characterData.GravityForce, _movementDirection.y) * _characterData.MovementSpeed * Time.deltaTime);
-            //_graphAnimator.SetFloat("Angle", Mathf.Abs(Vector2.Angle(_movementDirection, PlayerAimManager.Instance.AimDirection)));
         }
         //Always applying gravity, also when not moving, only exception is while dodging
         else if (_currentBehavior != PlayerBehaviorState.DODGE && !_controller.isGrounded)
