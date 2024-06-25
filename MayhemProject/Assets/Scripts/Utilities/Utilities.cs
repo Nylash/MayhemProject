@@ -11,5 +11,9 @@ public class Utilities : MonoBehaviour
     {
         IDLE, MOVE, DODGE
     }
+    public enum WeaponType
+    {
+        PROJECTILE, ZONE, MELEE
+    }
     #endregion
 }

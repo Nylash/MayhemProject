@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0bef204357e7644f881c4eea01c8bcf, type: 3}
+  m_Name: AK
+  m_EditorClassIdentifier: 
+  _weaponName: Ak
+  _weaponType: 0
+  _damage: 10
+  _attackSpeed: 0.01
+  _object: {fileID: 1511395521060662260, guid: f5a11531b6de89140a239a1a1001c99a, type: 3}
+  _range: 50
+  _travelSpeed: 20
+  _objectsByShot: 1
+  _timeBetweenObjectsOfOneShot: 0
+  _reloadDuration: 1.5
+  _magazineSize: 30
+  _inaccuracyAngle: 5
+  _zoneRadius: 0
+  _attackArea: {fileID: 0}
+  event_weapondIsReloadingUpdated:
+    m_PersistentCalls:
+      m_Calls: []
+  event_currentAmmunitionUpdated:
+    m_PersistentCalls:
+      m_Calls: []

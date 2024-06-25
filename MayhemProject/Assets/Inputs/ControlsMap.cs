@@ -55,7 +55,7 @@ public partial class @ControlsMap: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""PrincipalShoot"",
+                    ""name"": ""PrimaryShot"",
                     ""type"": ""Button"",
                     ""id"": ""59848495-1098-48e5-a851-c97641b18cad"",
                     ""expectedControlType"": ""Button"",
@@ -64,7 +64,7 @@ public partial class @ControlsMap: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""SecondaryShoot"",
+                    ""name"": ""SecondaryShot"",
                     ""type"": ""Button"",
                     ""id"": ""1ea6e677-d24f-4d93-905e-5f54bb150245"",
                     ""expectedControlType"": ""Button"",
@@ -97,7 +97,7 @@ public partial class @ControlsMap: IInputActionCollection2, IDisposable
                     ""id"": ""1e7e6d4e-569f-4964-8aa5-a3c5be4ea4e2"",
                     ""path"": ""<Gamepad>/leftStick"",
                     ""interactions"": """",
-                    ""processors"": ""StickDeadzone"",
+                    ""processors"": ""StickDeadzone(min=0.3)"",
                     ""groups"": ""Gamepad"",
                     ""action"": ""Movement"",
                     ""isComposite"": false,
@@ -218,7 +218,7 @@ public partial class @ControlsMap: IInputActionCollection2, IDisposable
                     ""id"": ""4c706dad-70b7-406f-a378-8918afdfd9f3"",
                     ""path"": ""<Gamepad>/rightStick"",
                     ""interactions"": """",
-                    ""processors"": ""StickDeadzone"",
+                    ""processors"": ""StickDeadzone(min=0.3)"",
                     ""groups"": ""Gamepad"",
                     ""action"": ""AimStick"",
                     ""isComposite"": false,
@@ -242,7 +242,7 @@ public partial class @ControlsMap: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard"",
-                    ""action"": ""PrincipalShoot"",
+                    ""action"": ""PrimaryShot"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -253,7 +253,7 @@ public partial class @ControlsMap: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""PrincipalShoot"",
+                    ""action"": ""PrimaryShot"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -264,7 +264,7 @@ public partial class @ControlsMap: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard"",
-                    ""action"": ""SecondaryShoot"",
+                    ""action"": ""SecondaryShot"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -275,7 +275,7 @@ public partial class @ControlsMap: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""SecondaryShoot"",
+                    ""action"": ""SecondaryShot"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -361,8 +361,8 @@ public partial class @ControlsMap: IInputActionCollection2, IDisposable
         m_Gameplay_Movement = m_Gameplay.FindAction("Movement", throwIfNotFound: true);
         m_Gameplay_AimStick = m_Gameplay.FindAction("AimStick", throwIfNotFound: true);
         m_Gameplay_AimMouse = m_Gameplay.FindAction("AimMouse", throwIfNotFound: true);
-        m_Gameplay_PrincipalShoot = m_Gameplay.FindAction("PrincipalShoot", throwIfNotFound: true);
-        m_Gameplay_SecondaryShoot = m_Gameplay.FindAction("SecondaryShoot", throwIfNotFound: true);
+        m_Gameplay_PrimaryShot = m_Gameplay.FindAction("PrimaryShot", throwIfNotFound: true);
+        m_Gameplay_SecondaryShot = m_Gameplay.FindAction("SecondaryShot", throwIfNotFound: true);
         m_Gameplay_Reload = m_Gameplay.FindAction("Reload", throwIfNotFound: true);
         m_Gameplay_Dodge = m_Gameplay.FindAction("Dodge", throwIfNotFound: true);
     }
@@ -429,8 +429,8 @@ public partial class @ControlsMap: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_Movement;
     private readonly InputAction m_Gameplay_AimStick;
     private readonly InputAction m_Gameplay_AimMouse;
-    private readonly InputAction m_Gameplay_PrincipalShoot;
-    private readonly InputAction m_Gameplay_SecondaryShoot;
+    private readonly InputAction m_Gameplay_PrimaryShot;
+    private readonly InputAction m_Gameplay_SecondaryShot;
     private readonly InputAction m_Gameplay_Reload;
     private readonly InputAction m_Gameplay_Dodge;
     public struct GameplayActions
@@ -440,8 +440,8 @@ public partial class @ControlsMap: IInputActionCollection2, IDisposable
         public InputAction @Movement => m_Wrapper.m_Gameplay_Movement;
         public InputAction @AimStick => m_Wrapper.m_Gameplay_AimStick;
         public InputAction @AimMouse => m_Wrapper.m_Gameplay_AimMouse;
-        public InputAction @PrincipalShoot => m_Wrapper.m_Gameplay_PrincipalShoot;
-        public InputAction @SecondaryShoot => m_Wrapper.m_Gameplay_SecondaryShoot;
+        public InputAction @PrimaryShot => m_Wrapper.m_Gameplay_PrimaryShot;
+        public InputAction @SecondaryShot => m_Wrapper.m_Gameplay_SecondaryShot;
         public InputAction @Reload => m_Wrapper.m_Gameplay_Reload;
         public InputAction @Dodge => m_Wrapper.m_Gameplay_Dodge;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
@@ -462,12 +462,12 @@ public partial class @ControlsMap: IInputActionCollection2, IDisposable
             @AimMouse.started += instance.OnAimMouse;
             @AimMouse.performed += instance.OnAimMouse;
             @AimMouse.canceled += instance.OnAimMouse;
-            @PrincipalShoot.started += instance.OnPrincipalShoot;
-            @PrincipalShoot.performed += instance.OnPrincipalShoot;
-            @PrincipalShoot.canceled += instance.OnPrincipalShoot;
-            @SecondaryShoot.started += instance.OnSecondaryShoot;
-            @SecondaryShoot.performed += instance.OnSecondaryShoot;
-            @SecondaryShoot.canceled += instance.OnSecondaryShoot;
+            @PrimaryShot.started += instance.OnPrimaryShot;
+            @PrimaryShot.performed += instance.OnPrimaryShot;
+            @PrimaryShot.canceled += instance.OnPrimaryShot;
+            @SecondaryShot.started += instance.OnSecondaryShot;
+            @SecondaryShot.performed += instance.OnSecondaryShot;
+            @SecondaryShot.canceled += instance.OnSecondaryShot;
             @Reload.started += instance.OnReload;
             @Reload.performed += instance.OnReload;
             @Reload.canceled += instance.OnReload;
@@ -487,12 +487,12 @@ public partial class @ControlsMap: IInputActionCollection2, IDisposable
             @AimMouse.started -= instance.OnAimMouse;
             @AimMouse.performed -= instance.OnAimMouse;
             @AimMouse.canceled -= instance.OnAimMouse;
-            @PrincipalShoot.started -= instance.OnPrincipalShoot;
-            @PrincipalShoot.performed -= instance.OnPrincipalShoot;
-            @PrincipalShoot.canceled -= instance.OnPrincipalShoot;
-            @SecondaryShoot.started -= instance.OnSecondaryShoot;
-            @SecondaryShoot.performed -= instance.OnSecondaryShoot;
-            @SecondaryShoot.canceled -= instance.OnSecondaryShoot;
+            @PrimaryShot.started -= instance.OnPrimaryShot;
+            @PrimaryShot.performed -= instance.OnPrimaryShot;
+            @PrimaryShot.canceled -= instance.OnPrimaryShot;
+            @SecondaryShot.started -= instance.OnSecondaryShot;
+            @SecondaryShot.performed -= instance.OnSecondaryShot;
+            @SecondaryShot.canceled -= instance.OnSecondaryShot;
             @Reload.started -= instance.OnReload;
             @Reload.performed -= instance.OnReload;
             @Reload.canceled -= instance.OnReload;
@@ -539,8 +539,8 @@ public partial class @ControlsMap: IInputActionCollection2, IDisposable
         void OnMovement(InputAction.CallbackContext context);
         void OnAimStick(InputAction.CallbackContext context);
         void OnAimMouse(InputAction.CallbackContext context);
-        void OnPrincipalShoot(InputAction.CallbackContext context);
-        void OnSecondaryShoot(InputAction.CallbackContext context);
+        void OnPrimaryShot(InputAction.CallbackContext context);
+        void OnSecondaryShot(InputAction.CallbackContext context);
         void OnReload(InputAction.CallbackContext context);
         void OnDodge(InputAction.CallbackContext context);
     }

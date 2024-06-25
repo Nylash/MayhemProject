@@ -33,7 +33,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "PrincipalShoot",
+                    "name": "PrimaryShot",
                     "type": "Button",
                     "id": "59848495-1098-48e5-a851-c97641b18cad",
                     "expectedControlType": "Button",
@@ -42,7 +42,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "SecondaryShoot",
+                    "name": "SecondaryShot",
                     "type": "Button",
                     "id": "1ea6e677-d24f-4d93-905e-5f54bb150245",
                     "expectedControlType": "Button",
@@ -75,7 +75,7 @@
                     "id": "1e7e6d4e-569f-4964-8aa5-a3c5be4ea4e2",
                     "path": "<Gamepad>/leftStick",
                     "interactions": "",
-                    "processors": "StickDeadzone",
+                    "processors": "StickDeadzone(min=0.3)",
                     "groups": "Gamepad",
                     "action": "Movement",
                     "isComposite": false,
@@ -196,7 +196,7 @@
                     "id": "4c706dad-70b7-406f-a378-8918afdfd9f3",
                     "path": "<Gamepad>/rightStick",
                     "interactions": "",
-                    "processors": "StickDeadzone",
+                    "processors": "StickDeadzone(min=0.3)",
                     "groups": "Gamepad",
                     "action": "AimStick",
                     "isComposite": false,
@@ -220,7 +220,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard",
-                    "action": "PrincipalShoot",
+                    "action": "PrimaryShot",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -231,7 +231,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "PrincipalShoot",
+                    "action": "PrimaryShot",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -242,7 +242,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard",
-                    "action": "SecondaryShoot",
+                    "action": "SecondaryShot",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -253,7 +253,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "SecondaryShoot",
+                    "action": "SecondaryShot",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

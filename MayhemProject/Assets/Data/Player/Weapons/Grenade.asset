@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0bef204357e7644f881c4eea01c8bcf, type: 3}
+  m_Name: Grenade
+  m_EditorClassIdentifier: 
+  _weaponName: Grenade
+  _weaponType: 1
+  _damage: 10
+  _attackSpeed: 1
+  hint: Be sure to only fill fields which correspond to weapon type, let the others
+    null (0 for numerical values)
+  _object: {fileID: 1511395521060662260, guid: e80b6a813937d1e499107a3e10f50f3d, type: 3}
+  _range: 10
+  _travelSpeed: 0.05
+  _objectsByShot: 1
+  _timeBetweenObjectsOfOneShot: 0
+  _reloadDuration: 0
+  _magazineSize: 0
+  _inaccuracyAngle: 0
+  _zoneRadius: 1
+  _trajectory:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 9.735981
+      outSlope: 9.735981
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.026646929
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: -1.3812251
+      outSlope: -1.3812251
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.46780163
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _attackArea: {fileID: 0}
+  event_weapondIsReloadingUpdated:
+    m_PersistentCalls:
+      m_Calls: []
+  event_currentAmmunitionUpdated:
+    m_PersistentCalls:
+      m_Calls: []
