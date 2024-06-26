@@ -1,6 +1,8 @@
 using UnityEngine;
 using static Utilities;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
+using static UnityEditor.PlayerSettings;
 
 public class PlayerAimManager : Singleton<PlayerAimManager>
 {
@@ -18,17 +20,42 @@ public class PlayerAimManager : Singleton<PlayerAimManager>
     private Vector2 _aimDirection;
     private Vector2 _lastStickDirection;
     private bool _isZoneAiming;
-    private Vector3 _zoneAimGuideInitialPos;
-    private Vector3 _zoneAimTarget;
+    public List<Vector3> _zoneAimTargets = new List<Vector3>();
+    private List<Transform> _additionalsZoneAimGuideTransforms = new List<Transform>();
     #region ACCESSORS
-    public Vector2 AimDirection { get => _aimDirection; }
-    public Vector3 ZoneAimTarget { get => _zoneAimTarget; }
+    public Vector2 AimDirection
+    {
+        get
+        {
+            //Mouse or right stick is used
+            if (_aimDirection != Vector2.zero)
+            {
+                return _aimDirection;
+            }
+            //Right stick not used but left is, so we aim with it
+            else if (_controlsMap.Gameplay.Movement.IsPressed())
+            {
+                return PlayerMovementManager.Instance.MovementDirection;
+            }
+            //No direction is given (neither movement nor aim) so we look at the last one register
+            else if(_lastStickDirection != Vector2.zero)
+            {
+                return _lastStickDirection;
+            }
+            else
+            {
+                return Vector3.one;
+            }
+        }
+    }
+    public List<Vector3> ZoneAimTargets { get => _zoneAimTargets; }
     #endregion
     #endregion
 
     #region CONFIGURATION
     [Header("CONFIGURATION")]
     [SerializeField] private Data_Character _characterData;
+    [SerializeField] private GameObject _zoneAimGuideObject;
     [SerializeField] private float _zoneAimGuideSpeed = 0.3f;
     #endregion
 
@@ -53,8 +80,6 @@ public class PlayerAimManager : Singleton<PlayerAimManager>
         _controlsMap.Gameplay.AimMouse.performed += ctx => _mouseDirection = ctx.ReadValue<Vector2>();
 
         _playerInput = GetComponent<PlayerInput>();
-
-        _zoneAimGuideInitialPos = _zoneAimGuideTransform.position;
     }
 
     private void Update()
@@ -114,16 +139,16 @@ public class PlayerAimManager : Singleton<PlayerAimManager>
             {
                 target = ray.GetPoint(distance);
             }
-            _zoneAimGuideTransform.position = new Vector3(target.x, _zoneAimGuideInitialPos.y, target.z);
+            _zoneAimGuideTransform.parent.position = new Vector3(target.x, _zoneAimGuideTransform.parent.position.y, target.z);
         }
         else
         {
             //Using gamepad we move zone aim guide along aimDirection
-            _zoneAimGuideTransform.position += (new Vector3(_aimDirection.x, 0, _aimDirection.y) * _zoneAimGuideSpeed);
+            _zoneAimGuideTransform.parent.position += (new Vector3(_aimDirection.x, 0, _aimDirection.y) * _zoneAimGuideSpeed);
         }
 
         //Look to zone aim guide
-        Vector3 dir = _zoneAimGuideTransform.position - transform.position;
+        Vector3 dir = _zoneAimGuideTransform.parent.position - transform.position;
         _orientationAnimator.SetFloat("InputX", dir.x);
         _orientationAnimator.SetFloat("InputY", dir.z);
     }
@@ -165,20 +190,131 @@ public class PlayerAimManager : Singleton<PlayerAimManager>
         }
     }
 
-    public void StartZoneAiming(float zoneRadius)
+    public void StartZoneAiming(float zoneRadius, int numberOfZones, float offsetAdditionalsZones, ZonePattern pattern)
     {
         //Activate zone aim guide and initializing it
         _zoneAimGuideTransform.localScale = Vector3.one * zoneRadius;
-        _zoneAimGuideTransform.position = new Vector3(transform.position.x, _zoneAimGuideInitialPos.y, transform.position.z);
+        _zoneAimGuideTransform.parent.position = new Vector3(transform.position.x, _zoneAimGuideTransform.parent.position.y, transform.position.z);
+        _zoneAimGuideTransform.parent.rotation = Quaternion.identity;
+        _zoneAimGuideTransform.position = new Vector3(0, _zoneAimGuideTransform.position.y, 0);
+        
+        //Cloning additionals zones if we spawn more than one object
+        for (int i = 1; i < numberOfZones; i++)
+        {
+            _additionalsZoneAimGuideTransforms.Add(Instantiate(_zoneAimGuideObject, _zoneAimGuideTransform.position, _zoneAimGuideTransform.rotation).transform);
+            _additionalsZoneAimGuideTransforms[i - 1].parent = _zoneAimGuideTransform.parent;
+        }
+        //Place the zone according to the pattern
+        ApplyOffsetPattern(offsetAdditionalsZones, pattern);
+
+        //Activate everything
         _isZoneAiming = true;
         _zoneAimGuideTransform.gameObject.SetActive(true);
+        foreach (Transform item in _additionalsZoneAimGuideTransforms)
+        {
+            item.gameObject.SetActive(true);
+        }
+
+        //Clean previous targets
+        _zoneAimTargets.Clear();
     }
 
     public void StopZoneAiming()
     {
         //Deactivate zone aim guide and register last position
         _isZoneAiming = false;
-        _zoneAimTarget = _zoneAimGuideTransform.position;
+        _zoneAimTargets.Add(_zoneAimGuideTransform.position);
         _zoneAimGuideTransform.gameObject.SetActive(false);
+
+        //Do the same for additionals zones
+        foreach (Transform item in _additionalsZoneAimGuideTransforms)
+        {
+            _zoneAimTargets.Add(item.position);
+            Destroy(item.gameObject);
+        }
+        _additionalsZoneAimGuideTransforms.Clear();
+
+        //Reset all positions
+        _zoneAimGuideTransform.parent.position = new Vector3(transform.position.x, _zoneAimGuideTransform.parent.position.y, transform.position.z);
+        _zoneAimGuideTransform.parent.rotation = Quaternion.identity;
+        _zoneAimGuideTransform.position = new Vector3(0, _zoneAimGuideTransform.position.y, 0);
+    }
+
+    private void ApplyOffsetPattern(float offset, ZonePattern pattern)
+    {
+        bool isOdd = IsIntOdd(_additionalsZoneAimGuideTransforms.Count + 1);
+
+        //Apply pattern depending on total number of zones
+        if (isOdd)
+        {
+            //Only move additionals zones
+            switch (pattern) 
+            {
+                case ZonePattern.LINE:
+                    for (int i = 0; i < _additionalsZoneAimGuideTransforms.Count; i++)
+                    {
+                        //(i / 2 + 1) calculate slot (1, 1, 2, 2...)
+                        //((i % 2 == 0) ? 1 : -1) calculate the sign so we have (1, -1, 2, -2...)
+                        //then we apply the offset to have the right position
+                        float pos = (i / 2 + 1) * ((i % 2 == 0) ? 1 : -1) * offset;
+
+                        _additionalsZoneAimGuideTransforms[i].position += new Vector3(pos, 0, 0);
+                    }
+                    break;
+                case ZonePattern.ARC:
+                    for (int i = 0; i < _additionalsZoneAimGuideTransforms.Count; i++)
+                    {
+                        //(i / 2 + 1) calculate slot (1, 1, 2, 2...)
+                        //((i % 2 == 0) ? 1 : -1) calculate the sign so we have (1, -1, 2, -2...)
+                        //then we apply the offset to have the right position
+                        float pos = (i / 2 + 1) * ((i % 2 == 0) ? 1 : -1) * offset;
+
+                        _additionalsZoneAimGuideTransforms[i].position += new Vector3(pos, 0, Mathf.Abs(pos)/2);
+                    }
+                    break;
+            }
+        }
+        else
+        {
+            //Move basic zone and additionals
+            switch (pattern)
+            {
+                case ZonePattern.LINE:
+                    _zoneAimGuideTransform.position += new Vector3(-offset / 2, 0, 0);
+                    for (int i = 0; i < _additionalsZoneAimGuideTransforms.Count; i++)
+                    {
+                        //(i / 2 + 1) calculate slot (1, 1, 2, 2...)
+                        //((i % 2 == 0) ? 1 : -1) calculate the sign so we have (1, -1, 2, -2...)
+                        //then we apply the offset to have the right position
+                        float pos = (i / 2 + 1) * ((i % 2 == 0) ? 1 : -1) * offset;
+
+                        //Calculate new position from basic zone position
+                        Vector3 newPosition = _zoneAimGuideTransform.position + new Vector3(pos, 0, 0);
+
+                        //Apply new position
+                        _additionalsZoneAimGuideTransforms[i].position = newPosition;
+                    }
+                    break;
+                case ZonePattern.ARC:
+                    _zoneAimGuideTransform.position += new Vector3(-offset / 2, 0, 0);
+                    for (int i = 0; i < _additionalsZoneAimGuideTransforms.Count; i++)
+                    {
+                        //(i / 2 + 1) calculate slot (1, 1, 2, 2...)
+                        //((i % 2 == 0) ? 1 : -1) calculate the sign so we have (1, -1, 2, -2...)
+                        //then we apply the offset to have the right position
+                        float posX = (i / 2 + 1) * ((i % 2 == 0) ? 1 : -1) * offset;
+                        //(i + 3) / 2 so we have (1, 2, 2, 3, 3...)
+                        //the -1 is to alignate everything with the basic zone
+                        float posZ = (i + 3) / 2 * (offset / 2) - 1;
+
+                        //Calculate new position from basic zone position
+                        Vector3 newPosition = _zoneAimGuideTransform.position + new Vector3(posX, 0, posZ);
+
+                        //Apply new position
+                        _additionalsZoneAimGuideTransforms[i].position = newPosition;
+                    }
+                    break;
+            }
+        }
     }
 }

@@ -23,7 +23,16 @@ public class ProjectileZoneBehaviour : MonoBehaviour
     private void Update()
     {
         _remainingDistanceRatio = Vector2.Distance(new Vector2(transform.position.x, transform.position.z), new Vector2(_target.x, _target.z)) / _distanceToTarget;
-        transform.position = Vector3.MoveTowards(transform.position, new Vector3(_target.x, _trajectory.Evaluate(1 - _remainingDistanceRatio),_target.z), _speed);
+
+        //if NaN we aim right under the player
+        if(float.IsNaN(_remainingDistanceRatio))
+        {
+            transform.position = Vector3.MoveTowards(transform.position, new Vector3(_target.x, 0, _target.z), _speed);
+        }
+        else
+        {
+            transform.position = Vector3.MoveTowards(transform.position, new Vector3(_target.x, _trajectory.Evaluate(1 - _remainingDistanceRatio), _target.z), _speed);
+        }
     }
 
     //Hit ground, explode on zoneRadius

@@ -15,7 +15,9 @@ MonoBehaviour:
   _weaponName: Ak
   _weaponType: 0
   _damage: 10
-  _attackSpeed: 0.01
+  _attackSpeed: 0.1
+  hint: Be sure to only fill fields which correspond to weapon type, let the others
+    null (0 for numerical values)
   _object: {fileID: 1511395521060662260, guid: f5a11531b6de89140a239a1a1001c99a, type: 3}
   _range: 50
   _travelSpeed: 20
@@ -25,6 +27,14 @@ MonoBehaviour:
   _magazineSize: 30
   _inaccuracyAngle: 5
   _zoneRadius: 0
+  _pattern: 0
+  _distanceBetweenZones: 0
+  _trajectory:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   _attackArea: {fileID: 0}
   event_weapondIsReloadingUpdated:
     m_PersistentCalls:

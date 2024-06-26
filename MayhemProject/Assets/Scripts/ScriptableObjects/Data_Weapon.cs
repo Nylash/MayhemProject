@@ -32,11 +32,11 @@ public class Data_Weapon : ScriptableObject
     [SerializeField] private float _travelSpeed;
     [SerializeField] private int _objectsByShot;
     [SerializeField] private float _timeBetweenObjectsOfOneShot;
+    [SerializeField] private float _reloadDuration;
     #endregion
 
     #region PROJECTILE INFO
     [Header("Projectile informations")]
-    [SerializeField] private float _reloadDuration;
     [SerializeField] private int _magazineSize;
     [SerializeField] private float _inaccuracyAngle;
     #endregion
@@ -44,6 +44,8 @@ public class Data_Weapon : ScriptableObject
     #region ZONE INFO
     [Header("Zone informations")]
     [SerializeField] private float _zoneRadius;
+    [SerializeField] private ZonePattern _pattern;
+    [SerializeField] private float _distanceBetweenZones;
     [SerializeField] private AnimationCurve _trajectory;
     #endregion
 
@@ -88,6 +90,8 @@ public class Data_Weapon : ScriptableObject
         }
     }
     public AnimationCurve Trajectory { get => _trajectory; }
+    public float DistanceBetweenZones { get => _distanceBetweenZones; }
+    public ZonePattern Pattern { get => _pattern; }
     #endregion
 
     #region EVENTS

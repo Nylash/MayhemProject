@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using static Utilities;
@@ -57,9 +58,19 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
         _characterData.SecondaryWeapon.InitializeWeapon();
 
         _currentWeaponUsed = _characterData.PrimaryWeapon;
+
+        //Subscribe to the event if the weapon is of type ZONE
+        if(_characterData.PrimaryWeapon.WeaponType == WeaponType.ZONE)
+        {
+            event_primaryShotInputEnded.AddListener(StartZoneWeaponShooting);
+        }
+        if(_characterData.SecondaryWeapon.WeaponType == WeaponType.ZONE)
+        {
+            event_secondaryShotInputEnded.AddListener(StartZoneWeaponShooting);
+        }
     }
 
-    private IEnumerator ProjectileWeaponShooting(Data_Weapon weapon, bool primaryWeapon)
+    private IEnumerator ProjectileWeaponShooting(Data_Weapon weapon, bool isPrimaryWeapon)
     {
         while (CanShot(weapon))
         {
@@ -87,11 +98,11 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
             yield return new WaitForSeconds(weapon.AttackSpeed);
 
             //Check if an input ask to stop the coroutine
-            if (CheckCoroutineNeedToStop(primaryWeapon))
+            if (CheckCoroutineNeedToStop(isPrimaryWeapon))
                 yield break;
         }
         //Stop the coroutine since the weapon cannot shoot anymore
-        if (primaryWeapon)
+        if (isPrimaryWeapon)
         {
             StopPrimaryCoroutine();
             yield break;
@@ -103,9 +114,9 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
         }
     }
 
-    private IEnumerator ZoneWeaponShooting(Data_Weapon weapon, bool primaryWeapon)
+    private IEnumerator ZoneWeaponShooting(Data_Weapon weapon, bool isPrimaryWeapon)
     {
-        if (CanShot(weapon))
+        if( CanShot(weapon) )
         {
             //Each loop create one object
             for (int i = 0; i < weapon.ObjectsByShot; i++)
@@ -116,7 +127,7 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
 
                 _currentProjetileZoneBehaviourRef.Speed = weapon.TravelSpeed;
                 _currentProjetileZoneBehaviourRef.ZoneRadius = weapon.ZoneRadius;
-                _currentProjetileZoneBehaviourRef.Target = PlayerAimManager.Instance.ZoneAimTarget;
+                _currentProjetileZoneBehaviourRef.Target = PlayerAimManager.Instance.ZoneAimTargets[i];
                 _currentProjetileZoneBehaviourRef.Trajectory = weapon.Trajectory;
 
                 _currentProjectileZone.SetActive(true);
@@ -127,11 +138,10 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
             }
             //Auto reload
             StartCoroutine(weapon.Reload());
-
-            //TODO : Maybe add several ammunition, and then replace if by while at start (but reload input should then work on this weapon type)
         }
-        //Stop the coroutine since the weapon cannot shoot anymore
-        if (primaryWeapon)
+
+        //Stop the coroutine, zone weapon only fire once
+        if (isPrimaryWeapon)
         {
             StopPrimaryCoroutine();
             yield break;
@@ -144,9 +154,9 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
     }
 
     //Method used to start ZoneWeaponShooting coroutine
-    private void StartZoneWeaponShooting(Data_Weapon weapon, bool primaryWeapon)
+    private void StartZoneWeaponShooting(Data_Weapon weapon, bool isPrimaryWeapon)
     {
-        if (primaryWeapon)
+        if (isPrimaryWeapon)
         {
             _primaryShotCoroutine = StartCoroutine(ZoneWeaponShooting(weapon, true));
         }
@@ -165,8 +175,7 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
                 _primaryShotCoroutine = StartCoroutine(ProjectileWeaponShooting(_characterData.PrimaryWeapon, true));
                 break;
             case WeaponType.ZONE:
-                //Call the method when the input is released (when player has finish aiming)
-                event_primaryShotInputEnded.AddListener(StartZoneWeaponShooting);
+                //Nothing, we subscribe to the event at the start
                 break;
             case WeaponType.MELEE:
                 break;
@@ -182,8 +191,7 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
                 _secondaryShotCoroutine = StartCoroutine(ProjectileWeaponShooting(_characterData.SecondaryWeapon, false));
                 break;
             case WeaponType.ZONE:
-                //Call the method when the input is released (when player has finish aiming)
-                event_secondaryShotInputEnded.AddListener(StartZoneWeaponShooting);
+                //Nothing, we subscribe to the event at the start
                 break;
             case WeaponType.MELEE:
                 break;
@@ -205,7 +213,9 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
         //Start zone aiming if needed
         if(_characterData.PrimaryWeapon.WeaponType == WeaponType.ZONE)
         {
-            PlayerAimManager.Instance.StartZoneAiming(_characterData.PrimaryWeapon.ZoneRadius);
+            PlayerAimManager.Instance.StartZoneAiming(
+                _characterData.PrimaryWeapon.ZoneRadius, _characterData.PrimaryWeapon.ObjectsByShot,
+                _characterData.PrimaryWeapon.DistanceBetweenZones, _characterData.PrimaryWeapon.Pattern);
         }
 
         //Stock which weapon is currently used
@@ -227,7 +237,9 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
         //Start zone aiming if needed
         if (_characterData.SecondaryWeapon.WeaponType == WeaponType.ZONE)
         {
-            PlayerAimManager.Instance.StartZoneAiming(_characterData.SecondaryWeapon.ZoneRadius);
+            PlayerAimManager.Instance.StartZoneAiming(
+                _characterData.SecondaryWeapon.ZoneRadius, _characterData.SecondaryWeapon.ObjectsByShot,
+                _characterData.SecondaryWeapon.DistanceBetweenZones, _characterData.SecondaryWeapon.Pattern);
         }
 
         //Stock which weapon is currently used
