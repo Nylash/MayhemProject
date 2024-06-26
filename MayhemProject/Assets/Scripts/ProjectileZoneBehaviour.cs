@@ -35,5 +35,8 @@ public class ProjectileZoneBehaviour : MonoBehaviour
         }
     }
 
-    //Hit ground, explode on zoneRadius
+    private void OnTriggerEnter(Collider other)
+    {
+        Destroy(gameObject);
+    }
 }
