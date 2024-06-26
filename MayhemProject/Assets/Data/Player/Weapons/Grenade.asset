@@ -21,13 +21,13 @@ MonoBehaviour:
   _object: {fileID: 1511395521060662260, guid: e80b6a813937d1e499107a3e10f50f3d, type: 3}
   _range: 10
   _travelSpeed: 0.05
-  _objectsByShot: 6
+  _objectsByShot: 1
   _timeBetweenObjectsOfOneShot: 0
   _reloadDuration: 5
   _magazineSize: 0
   _inaccuracyAngle: 0
   _zoneRadius: 1
-  _pattern: 0
+  _pattern: 1
   _distanceBetweenZones: 2
   _trajectory:
     serializedVersion: 2

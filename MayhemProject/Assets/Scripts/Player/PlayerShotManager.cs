@@ -24,6 +24,7 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
     #region CONFIGURATION
     [Header("CONFIGURATION")]
     [SerializeField] private Data_Character _characterData;
+    [SerializeField, Layer] private int _attackLayer;
     #endregion
 
     #region EVENTS
@@ -89,6 +90,8 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
                 _currentProjectileBehaviourRef.Direction = shootDirection.normalized;
                 _currentProjectileBehaviourRef.Speed = weapon.TravelSpeed;
                 _currentProjectileBehaviourRef.Range = weapon.Range;
+                _currentProjectile.layer = _attackLayer;
+
                 _currentProjectile.SetActive(true);
 
                 //Little security to avoid waiting if there is only one object to spawn
@@ -129,6 +132,7 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
                 _currentProjetileZoneBehaviourRef.ZoneRadius = weapon.ZoneRadius;
                 _currentProjetileZoneBehaviourRef.Target = PlayerAimManager.Instance.ZoneAimTargets[i];
                 _currentProjetileZoneBehaviourRef.Trajectory = weapon.Trajectory;
+                _currentProjectileZone.layer = _attackLayer;
 
                 _currentProjectileZone.SetActive(true);
 
