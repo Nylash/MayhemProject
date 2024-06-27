@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 using static Utilities;
 
 /// <summary>
@@ -13,6 +14,8 @@ public class Data_Weapon : ScriptableObject
     [Header("Info")]
     [SerializeField] private string _weaponName;
     [SerializeField] private WeaponType _weaponType;
+    [SerializeField] private Sprite _weaponImage;
+    [SerializeField] private float _weaponImageSize = 1f;
     #endregion
 
     #region COMMONS INFO
@@ -33,11 +36,11 @@ public class Data_Weapon : ScriptableObject
     [SerializeField] private int _objectsByShot;
     [SerializeField] private float _timeBetweenObjectsOfOneShot;
     [SerializeField] private float _reloadDuration;
+    [SerializeField] private int _magazineSize;
     #endregion
 
     #region PROJECTILE INFO
     [Header("Projectile informations")]
-    [SerializeField] private int _magazineSize;
     [SerializeField] private float _inaccuracyAngle;
     #endregion
 
@@ -92,6 +95,8 @@ public class Data_Weapon : ScriptableObject
     public AnimationCurve Trajectory { get => _trajectory; }
     public float DistanceBetweenZones { get => _distanceBetweenZones; }
     public ZonePattern Pattern { get => _pattern; }
+    public Sprite WeaponImage { get => _weaponImage; }
+    public float WeaponImageSize { get => _weaponImageSize; }
     #endregion
 
     #region EVENTS

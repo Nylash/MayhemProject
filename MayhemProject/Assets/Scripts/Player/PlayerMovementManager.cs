@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using System.Collections;
 using static Utilities;
+using UnityEngine.UI;
 
 public class PlayerMovementManager : Singleton<PlayerMovementManager>
 {
@@ -22,6 +23,7 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
     #region CONFIGURATION
     [Header("CONFIGURATION")]
     [SerializeField] private Data_Character _characterData;
+    [SerializeField] private Image _imageDodgeReloading;
     #endregion
 
     #region EVENTS
@@ -49,6 +51,8 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
 
     private void Start()
     {
+        _characterData.event_dodgeAvailabilityUpdated.AddListener(DodgeAvailabilyUpdated);
+
         _characterData.DodgeIsReady = true;
     }
 
@@ -131,5 +135,30 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
         }
         //Notify this to update new LastStickDirection
         event_inputMovementIsStopped.Invoke();
+    }
+
+    private void DodgeAvailabilyUpdated(bool dodgeIsReady)
+    {
+        if (dodgeIsReady)
+        {
+            _imageDodgeReloading.fillAmount = 0;
+        }
+        else
+        {
+            StartCoroutine(DodgeReloadingUI());
+        }
+    }
+
+    private IEnumerator DodgeReloadingUI()
+    {
+        float timer = 0f;
+
+        while (timer < _characterData.DodgeCD)
+        {
+            timer += Time.deltaTime;
+            _imageDodgeReloading.fillAmount = timer / _characterData.DodgeCD;
+            yield return new WaitForEndOfFrame();
+        }
+        yield break;
     }
 }

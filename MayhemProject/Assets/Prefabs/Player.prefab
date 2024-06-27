@@ -479,6 +479,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _persistentSingleton: 0
   _characterData: {fileID: 11400000, guid: 9f60e4cce59af024a8f88a79067fe3a4, type: 2}
+  _imageDodgeReloading: {fileID: 1857200130593967990}
   event_inputMovementIsStopped:
     m_PersistentCalls:
       m_Calls: []

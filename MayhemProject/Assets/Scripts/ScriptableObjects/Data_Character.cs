@@ -37,6 +37,7 @@ public class Data_Character : ScriptableObject
     //Be sure to reset those variables at the start of the game if needed (do it on Start so event are listened)
     [Header("Runtime")]
     private bool _dodgeIsReady;
+    private float _currentHP;
     #endregion
 
     #region ACCESSORS
@@ -57,15 +58,25 @@ public class Data_Character : ScriptableObject
     public float DodgeDuration { get => _dodgeDuration; }
     public Data_Weapon PrimaryWeapon { get => _primaryWeapon; }
     public Data_Weapon SecondaryWeapon { get => _secondaryWeapon; }
+    public float CurrentHP { get => _currentHP; 
+        set 
+        {
+            _currentHP = value;
+            event_currentHPUpdated.Invoke(_currentHP);
+        }  
+    }
     #endregion
 
     #region EVENTS
     [HideInInspector] public UnityEvent<bool> event_dodgeAvailabilityUpdated;
+    [HideInInspector] public UnityEvent<float> event_currentHPUpdated;
     #endregion
 
     private void OnEnable()
     {
         if (event_dodgeAvailabilityUpdated == null)
             event_dodgeAvailabilityUpdated = new UnityEvent<bool>();
+        if (event_currentHPUpdated == null)
+            event_currentHPUpdated = new UnityEvent<float>();
     }
 }

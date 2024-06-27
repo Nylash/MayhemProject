@@ -16,7 +16,7 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
     private bool _stopSecondaryShotCoroutine;
     private Data_Weapon _currentWeaponUsed;
     #region ACCESSORS
-
+    public Data_Character CharacterData { get => _characterData; }
     #endregion
     #endregion
 
@@ -28,7 +28,7 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
 
     #region EVENTS
     private UnityEvent<Data_Weapon, bool> event_primaryShotInputEnded;
-    private UnityEvent<Data_Weapon, bool> event_secondaryShotInputEnded;
+    private UnityEvent<Data_Weapon, bool> event_secondaryShotInputEnded;  
     #endregion
 
     private void OnEnable()
@@ -120,6 +120,7 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
     {
         if( CanShot(weapon) )
         {
+            weapon.CurrentAmmunition--;
             //Each loop create one object
             for (int i = 0; i < weapon.ObjectsByShot; i++)
             {

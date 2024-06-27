@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _weaponName: Grenade
   _weaponType: 1
+  _weaponImage: {fileID: 21300000, guid: 5ca82119b94bd2d41978fc24eaac6259, type: 3}
+  _weaponImageSize: 0.7
   _damage: 10
   _attackSpeed: 1
   hint: Be sure to only fill fields which correspond to weapon type, let the others
@@ -24,7 +26,7 @@ MonoBehaviour:
   _objectsByShot: 1
   _timeBetweenObjectsOfOneShot: 0
   _reloadDuration: 5
-  _magazineSize: 0
+  _magazineSize: 1
   _inaccuracyAngle: 0
   _zoneRadius: 1
   _pattern: 1
