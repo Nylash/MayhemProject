@@ -15,7 +15,7 @@ public class UIGameMainManager : MonoBehaviour
 
     private Data_Character _characterData;
 
-    private void Start()
+    private void Awake()
     {
         _characterData = PlayerShotManager.Instance.CharacterData;
 

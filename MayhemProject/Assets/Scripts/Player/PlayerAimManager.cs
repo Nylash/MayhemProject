@@ -20,8 +20,9 @@ public class PlayerAimManager : Singleton<PlayerAimManager>
     private Vector2 _aimDirection;
     private Vector2 _lastStickDirection;
     private bool _isZoneAiming;
-    public List<Vector3> _zoneAimTargets = new List<Vector3>();
+    private List<Vector3> _zoneAimTargets = new List<Vector3>();
     private List<Transform> _additionalsZoneAimGuideTransforms = new List<Transform>();
+    private Vector3 _zoneAimParentInitialPos;
     #region ACCESSORS
     public Vector2 AimDirection
     {
@@ -49,6 +50,7 @@ public class PlayerAimManager : Singleton<PlayerAimManager>
         }
     }
     public List<Vector3> ZoneAimTargets { get => _zoneAimTargets; }
+    public bool IsZoneAiming { get => _isZoneAiming; }
     #endregion
     #endregion
 
@@ -80,6 +82,8 @@ public class PlayerAimManager : Singleton<PlayerAimManager>
         _controlsMap.Gameplay.AimMouse.performed += ctx => _mouseDirection = ctx.ReadValue<Vector2>();
 
         _playerInput = GetComponent<PlayerInput>();
+
+        _zoneAimParentInitialPos = _zoneAimGuideTransform.parent.localPosition;
     }
 
     private void Update()
@@ -194,10 +198,10 @@ public class PlayerAimManager : Singleton<PlayerAimManager>
     {
         //Activate zone aim guide and initializing it
         _zoneAimGuideTransform.localScale = Vector3.one * zoneRadius;
-        _zoneAimGuideTransform.parent.position = new Vector3(transform.position.x, _zoneAimGuideTransform.parent.position.y, transform.position.z);
+        _zoneAimGuideTransform.parent.localPosition = _zoneAimParentInitialPos;
         _zoneAimGuideTransform.parent.rotation = Quaternion.identity;
-        _zoneAimGuideTransform.position = new Vector3(0, _zoneAimGuideTransform.position.y, 0);
-        
+        _zoneAimGuideTransform.localPosition = Vector3.zero;
+
         //Cloning additionals zones if we spawn more than one object
         for (int i = 1; i < numberOfZones; i++)
         {
@@ -235,9 +239,9 @@ public class PlayerAimManager : Singleton<PlayerAimManager>
         _additionalsZoneAimGuideTransforms.Clear();
 
         //Reset all positions
-        _zoneAimGuideTransform.parent.position = new Vector3(transform.position.x, _zoneAimGuideTransform.parent.position.y, transform.position.z);
+        _zoneAimGuideTransform.parent.localPosition = _zoneAimParentInitialPos;
         _zoneAimGuideTransform.parent.rotation = Quaternion.identity;
-        _zoneAimGuideTransform.position = new Vector3(0, _zoneAimGuideTransform.position.y, 0);
+        _zoneAimGuideTransform.localPosition = Vector3.zero;
     }
 
     private void ApplyOffsetPattern(float offset, ZonePattern pattern)

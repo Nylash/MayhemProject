@@ -207,7 +207,17 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
         //Cancel secondaryShotCoroutine if currently used
         if (_secondaryShotCoroutine != null)
         {
-            _stopSecondaryShotCoroutine = true; ;
+            //Flag to true, so when next iteration of object spawn is done the coroutine will be stopped
+            _stopSecondaryShotCoroutine = true;
+        }
+
+        if (PlayerAimManager.Instance.IsZoneAiming)
+        {
+            //Stop zone aiming if needed
+            if (_characterData.SecondaryWeapon.WeaponType == WeaponType.ZONE)
+            {
+                PlayerAimManager.Instance.StopZoneAiming();
+            }
         }
 
         //Start shooting
@@ -231,7 +241,17 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
         //Cancel primaryShotCoroutine if currently used
         if (_primaryShotCoroutine != null)
         {
+            //Flag to true, so when next iteration of object spawn is done the coroutine will be stopped
             _stopPrimaryShotCoroutine = true;
+        }
+
+        if (PlayerAimManager.Instance.IsZoneAiming)
+        {
+            //Stop zone aiming if needed
+            if (_characterData.PrimaryWeapon.WeaponType == WeaponType.ZONE)
+            {
+                PlayerAimManager.Instance.StopZoneAiming();
+            }
         }
 
         //Start shooting
