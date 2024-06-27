@@ -89,6 +89,7 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
                 _currentProjectileBehaviourRef.Direction = shootDirection.normalized;
                 _currentProjectileBehaviourRef.Speed = weapon.TravelSpeed;
                 _currentProjectileBehaviourRef.Range = weapon.Range;
+                _currentProjectileBehaviourRef.AssociatedWeapon = weapon;
                 _currentProjectile.layer = _attackLayer;
 
                 _currentProjectile.SetActive(true);
@@ -132,6 +133,7 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
                 _currentProjetileZoneBehaviourRef.ZoneRadius = weapon.ZoneRadius;
                 _currentProjetileZoneBehaviourRef.Target = PlayerAimManager.Instance.ZoneAimTargets[i];
                 _currentProjetileZoneBehaviourRef.Trajectory = weapon.Trajectory;
+                _currentProjetileZoneBehaviourRef.AssociatedWeapon = weapon;
                 _currentProjectileZone.layer = _attackLayer;
 
                 _currentProjectileZone.SetActive(true);

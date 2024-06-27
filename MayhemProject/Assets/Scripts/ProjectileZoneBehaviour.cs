@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class ProjectileZoneBehaviour : MonoBehaviour
 {
+    private Data_Weapon _associatedWeapon;
     private Vector3 _target;
     private float _speed;
     private float _zoneRadius;
@@ -13,6 +14,7 @@ public class ProjectileZoneBehaviour : MonoBehaviour
     public float Speed { get => _speed; set => _speed = value; }
     public float ZoneRadius { get => _zoneRadius; set => _zoneRadius = value; }
     public AnimationCurve Trajectory { get => _trajectory; set => _trajectory = value; }
+    public Data_Weapon AssociatedWeapon { get => _associatedWeapon; set => _associatedWeapon = value; }
 
     private void Start()
     {
