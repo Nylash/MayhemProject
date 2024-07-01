@@ -1,0 +1,92 @@
+name = "Mayhem Project"
+skipFolders = [ "node_modules", ".vscode", "out", "dist", ".vscode-test" ]
+skipFiles = [ ".gitignore", "package.json" ]
+
+[[processes]]
+id = "bpxx1o8kngmf86ei0h2mefay"
+name = "Polish"
+
+  [[processes.tasks]]
+  id = "ciy0zvo8tsdh5c3wxgetc8e8"
+  title = "Orientation not correctly staying put"
+  description = "When we release the joystick, orientation often move not correctly"
+  tag = "backlog"
+  linkFiles = [ ]
+  dueDate = ""
+  checkList = [ ]
+  priority = ""
+  linkCommits = [ ]
+
+[[processes]]
+id = "process1"
+name = "To Do"
+
+  [[processes.tasks]]
+  id = "yexbn0fivfk36t1bjabstv6x"
+  title = "Spawner factory"
+  description = "Implement basic factory"
+  tag = "backlog"
+  linkFiles = [ ]
+  dueDate = ""
+  checkList = [ ]
+  priority = ""
+  linkCommits = [ ]
+
+  [[processes.tasks]]
+  id = "mtzrqgnxdpr1eabjwns6dv4v"
+  title = "PlayerHealthManager"
+  description = ""
+  tag = "backlog"
+  linkFiles = [ ]
+  dueDate = ""
+  checkList = [ ]
+  priority = ""
+  linkCommits = [ ]
+
+  [[processes.tasks]]
+  id = "g0lyyi078zasy8xiig2y6aff"
+  title = "Enemy AI"
+  description = ""
+  tag = "backlog"
+  linkFiles = [ ]
+  dueDate = ""
+  checkList = [ ]
+  priority = ""
+  linkCommits = [ ]
+
+  [[processes.tasks]]
+  id = "bpumvpe1dev3hdun14mukixh"
+  title = "Basic LD Block out"
+  description = ""
+  tag = "backlog"
+  linkFiles = [ ]
+  dueDate = ""
+  checkList = [ ]
+  priority = ""
+  linkCommits = [ ]
+
+  [[processes.tasks]]
+  id = "npqhevj3r6xe3zs1sovf1e0k"
+  title = "GDD"
+  description = ""
+  tag = "backlog"
+  linkFiles = [ ]
+  dueDate = ""
+  checkList = [ ]
+  priority = ""
+  linkCommits = [ ]
+
+[[processes]]
+id = "process2"
+name = "In Progress"
+tasks = [ ]
+
+[[processes]]
+id = "geqogapazqh60v5sa504u92t"
+name = "Documentation"
+tasks = [ ]
+
+[[processes]]
+id = "process3"
+name = "Done"
+tasks = [ ]
