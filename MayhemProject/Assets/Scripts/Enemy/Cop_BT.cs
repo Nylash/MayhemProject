@@ -6,5 +6,8 @@ using System;
 
 public class Cop_BT : BasicEnemy_BT
 {
+    public override void Initialize()
+    {
 
+    }
 }

@@ -40,6 +40,8 @@ public abstract class BasicEnemy_BT : BehaviourTree.BehaviourTree
         //_HPBar.transform.LookAt(transform.position + Camera.main.transform.rotation * Vector3.forward, Camera.main.transform.rotation * Vector3.up);
     }
 
+    public abstract void Initialize();
+
     public void TakeDamage(float damage)
     {
         _HP -= damage;
