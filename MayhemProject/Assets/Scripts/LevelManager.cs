@@ -84,10 +84,13 @@ public class LevelManager : MonoBehaviour
     {
         position = Vector3.zero;
 
+        //Loop to avoid spawning unit on top of each other
         for (int attempt = 0; attempt < MaxSpawnAttempts; attempt++)
         {
+            //Get a random bounds from all associated zones
             int randomIndex = Random.Range(0, _zones.Count);
 
+            //Get random position in the bounds
             float offsetX = Random.Range(-_zones[randomIndex].bounds.extents.x, _zones[randomIndex].bounds.extents.x);
             float offsetZ = Random.Range(-_zones[randomIndex].bounds.extents.z, _zones[randomIndex].bounds.extents.z);
             float offsetY = unit switch
@@ -100,6 +103,7 @@ public class LevelManager : MonoBehaviour
 
             Vector3 tentativePosition = _zones[randomIndex].bounds.center + new Vector3(offsetX, offsetY, offsetZ);
 
+            //Check if the position is empty
             Collider[] hitColliders = Physics.OverlapSphere(new Vector3(tentativePosition.x, 0, tentativePosition.z), GetSpawnDetectionRadius(unit), _checkUnitLayer);
             if (hitColliders.Length == 0)
             {

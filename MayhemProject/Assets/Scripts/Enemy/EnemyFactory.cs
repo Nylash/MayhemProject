@@ -5,23 +5,16 @@ public class EnemyFactory
 {
     public static BasicEnemy_BT CreateEnemy(string enemyType, Vector3 position)
     {
-        GameObject enemyObject = null;
-
-        switch (enemyType)
+        //Load prefab from resources
+        GameObject enemyObject = enemyType switch
         {
-            case "Cop":
-                enemyObject = GameObject.Instantiate(Resources.Load("Cop")) as GameObject;
-                break;
-            case "Tank":
-                enemyObject = GameObject.Instantiate(Resources.Load("Tank")) as GameObject;
-                break;
-            case "Chopper":
-                enemyObject = GameObject.Instantiate(Resources.Load("Chopper")) as GameObject;
-                break;
-            default:
-                throw new ArgumentException("Invalid enemy type");
-        }
+            "Cop" => GameObject.Instantiate(Resources.Load("Cop")) as GameObject,
+            "Tank" => GameObject.Instantiate(Resources.Load("Tank")) as GameObject,
+            "Chopper" => GameObject.Instantiate(Resources.Load("Chopper")) as GameObject,
+            _ => null,
+        };
 
+        //Initialize the enemy
         if (enemyObject != null)
         {
             enemyObject.transform.position = position;
