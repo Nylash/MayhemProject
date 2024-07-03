@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UIGameMainManager : MonoBehaviour
+public class UIGameMainManager : Singleton<UIGameMainManager>
 {
     [SerializeField] private Image _primaryWeaponIcon;
     [SerializeField] private Image _secondaryWeaponIcon;
@@ -15,7 +15,7 @@ public class UIGameMainManager : MonoBehaviour
 
     private Data_Character _characterData;
 
-    private void Awake()
+    protected override void OnAwake()
     {
         _characterData = PlayerShotManager.Instance.CharacterData;
 

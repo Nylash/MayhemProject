@@ -191,6 +191,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &372490308
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 372490309}
+  m_Layer: 0
+  m_Name: Enemies
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &372490309
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 372490308}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1815375335}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &416910924
 GameObject:
   m_ObjectHideFlags: 0
@@ -1151,9 +1182,6 @@ MonoBehaviour:
   _checkUnitLayer:
     serializedVersion: 2
     m_Bits: 256
-  copPrefab: {fileID: 2867635628190820572, guid: 127344d8ce4e20440b83e39d185e5769, type: 3}
-  tankPrefab: {fileID: 8150482809651971170, guid: f898b7000e4356847b5bf3eee27533c6, type: 3}
-  chopperPrefab: {fileID: 8769832916779040274, guid: 7b41f613643401549a95d568ecabc194, type: 3}
 --- !u!4 &1815375335
 Transform:
   m_ObjectHideFlags: 0
@@ -1167,6 +1195,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 372490309}
   - {fileID: 1668755890}
   - {fileID: 636607512}
   - {fileID: 438506451}
@@ -1386,10 +1415,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 825417607262463948, guid: 67a9f966adb584b469f650db52334ec1, type: 3}
-      propertyPath: _attackLayer.m_Bits
-      value: 128
-      objectReference: {fileID: 0}
     - target: {fileID: 7391731567626518271, guid: 67a9f966adb584b469f650db52334ec1, type: 3}
       propertyPath: m_Name
       value: Player

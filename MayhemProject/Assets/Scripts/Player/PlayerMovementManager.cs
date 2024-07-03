@@ -47,13 +47,7 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
         _controlsMap.Gameplay.Dodge.performed += ctx => StartCoroutine(Dodging());
 
         _controller = GetComponent<CharacterController>();
-    }
-
-    private void Start()
-    {
         _characterData.event_dodgeAvailabilityUpdated.AddListener(DodgeAvailabilyUpdated);
-
-        _characterData.DodgeIsReady = true;
     }
 
     private void Update()

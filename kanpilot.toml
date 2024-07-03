@@ -22,8 +22,8 @@ id = "process1"
 name = "To Do"
 
   [[processes.tasks]]
-  id = "mtzrqgnxdpr1eabjwns6dv4v"
-  title = "PlayerHealthManager"
+  id = "l4gi4bfoiutqwzp6n3908ri7"
+  title = "Grenade explosion"
   description = ""
   tag = "backlog"
   linkFiles = [ ]
@@ -73,21 +73,22 @@ tasks = [ ]
 [[processes]]
 id = "geqogapazqh60v5sa504u92t"
 name = "Documentation"
+tasks = [ ]
+
+[[processes]]
+id = "process3"
+name = "Done"
 
   [[processes.tasks]]
-  id = "yexbn0fivfk36t1bjabstv6x"
-  title = "Spawner factory"
-  description = "<p>Factory</p><p><code>public class EnemyFactory</code></p><p><code>{</code></p><p><code>    public static Enemy CreateEnemy(string enemyType, Vector3 position)</code></p><p><code>    {</code></p><p><code>        GameObject enemyObject = null;</code></p><p><code>        switch (enemyType.ToLower())</code></p><p><code>        {</code></p><p><code>            case \"police\":</code></p><p><code>                enemyObject = GameObject.Instantiate(Resources.Load(\"PolicePrefab\")) as GameObject;</code></p><p><code>                break;</code></p><p><code>            case \"tank\":</code></p><p><code>                enemyObject = GameObject.Instantiate(Resources.Load(\"TankPrefab\")) as GameObject;</code></p><p><code>                break;</code></p><p><code>            case \"helicopter\":</code></p><p><code>                enemyObject = GameObject.Instantiate(Resources.Load(\"HelicopterPrefab\")) as GameObject;</code></p><p><code>                break;</code></p><p><code>            default:</code></p><p><code>                throw new ArgumentException(\"Invalid enemy type\");</code></p><p><code>        }</code></p><p><code>        if (enemyObject != null)</code></p><p><code>        {</code></p><p><code>            enemyObject.transform.position = position;</code></p><p><code>            Enemy enemy = enemyObject.GetComponent&lt;Enemy&gt;();</code></p><p><code>            enemy.Initialize();</code></p><p><code>            return enemy;</code></p><p><code>        }</code></p><p><code>        return null;</code></p><p><code>    }</code></p><p><code>}</code></p><p>Appel factory</p><p><code>public class LevelManager : MonoBehaviour</code></p><p><code>{</code></p><p><code>    void Start()</code></p><p><code>    {</code></p><p><code>        // Exemples d'instanciation</code></p><p><code>        for (int i = 0; i &lt; 150; i++)</code></p><p><code>        {</code></p><p><code>            EnemyFactory.CreateEnemy(\"police\", GetRandomPosition());</code></p><p><code>        }</code></p><p><code>        for (int i = 0; i &lt; 40; i++)</code></p><p><code>        {</code></p><p><code>            EnemyFactory.CreateEnemy(\"tank\", GetRandomPosition());</code></p><p><code>        }</code></p><p><code>        for (int i = 0; i &lt; 10; i++)</code></p><p><code>        {</code></p><p><code>            EnemyFactory.CreateEnemy(\"helicopter\", GetRandomPosition());</code></p><p><code>        }</code></p><p><code>    }</code></p><p><code>    private Vector3 GetRandomPosition()</code></p><p><code>    {</code></p><p><code>        // Retourne une position aléatoire dans le niveau</code></p><p><code>        return new Vector3(Random.Range(-10, 10), 0, Random.Range(-10, 10));</code></p><p><code>    }</code></p><p><code>}</code></p>"
+  id = "mtzrqgnxdpr1eabjwns6dv4v"
+  title = "PlayerHealthManager"
+  description = ""
   tag = "backlog"
   linkFiles = [ ]
   dueDate = ""
   checkList = [ ]
   priority = ""
   linkCommits = [ ]
-
-[[processes]]
-id = "process3"
-name = "Done"
 
   [[processes.tasks]]
   id = "pqxxft9395byht97q8f38amo"
@@ -148,6 +149,17 @@ name = "Done"
   id = "kbpcekvjkjq4b14ofkx1xeht"
   title = "Movement"
   description = ""
+  tag = "backlog"
+  linkFiles = [ ]
+  dueDate = ""
+  checkList = [ ]
+  priority = ""
+  linkCommits = [ ]
+
+  [[processes.tasks]]
+  id = "yexbn0fivfk36t1bjabstv6x"
+  title = "Spawner factory"
+  description = "<p>Factory</p><p><code>public class EnemyFactory</code></p><p><code>{</code></p><p><code>    public static Enemy CreateEnemy(string enemyType, Vector3 position)</code></p><p><code>    {</code></p><p><code>        GameObject enemyObject = null;</code></p><p><code>        switch (enemyType.ToLower())</code></p><p><code>        {</code></p><p><code>            case \"police\":</code></p><p><code>                enemyObject = GameObject.Instantiate(Resources.Load(\"PolicePrefab\")) as GameObject;</code></p><p><code>                break;</code></p><p><code>            case \"tank\":</code></p><p><code>                enemyObject = GameObject.Instantiate(Resources.Load(\"TankPrefab\")) as GameObject;</code></p><p><code>                break;</code></p><p><code>            case \"helicopter\":</code></p><p><code>                enemyObject = GameObject.Instantiate(Resources.Load(\"HelicopterPrefab\")) as GameObject;</code></p><p><code>                break;</code></p><p><code>            default:</code></p><p><code>                throw new ArgumentException(\"Invalid enemy type\");</code></p><p><code>        }</code></p><p><code>        if (enemyObject != null)</code></p><p><code>        {</code></p><p><code>            enemyObject.transform.position = position;</code></p><p><code>            Enemy enemy = enemyObject.GetComponent&lt;Enemy&gt;();</code></p><p><code>            enemy.Initialize();</code></p><p><code>            return enemy;</code></p><p><code>        }</code></p><p><code>        return null;</code></p><p><code>    }</code></p><p><code>}</code></p><p>Appel factory</p><p><code>public class LevelManager : MonoBehaviour</code></p><p><code>{</code></p><p><code>    void Start()</code></p><p><code>    {</code></p><p><code>        // Exemples d'instanciation</code></p><p><code>        for (int i = 0; i &lt; 150; i++)</code></p><p><code>        {</code></p><p><code>            EnemyFactory.CreateEnemy(\"police\", GetRandomPosition());</code></p><p><code>        }</code></p><p><code>        for (int i = 0; i &lt; 40; i++)</code></p><p><code>        {</code></p><p><code>            EnemyFactory.CreateEnemy(\"tank\", GetRandomPosition());</code></p><p><code>        }</code></p><p><code>        for (int i = 0; i &lt; 10; i++)</code></p><p><code>        {</code></p><p><code>            EnemyFactory.CreateEnemy(\"helicopter\", GetRandomPosition());</code></p><p><code>        }</code></p><p><code>    }</code></p><p><code>    private Vector3 GetRandomPosition()</code></p><p><code>    {</code></p><p><code>        // Retourne une position aléatoire dans le niveau</code></p><p><code>        return new Vector3(Random.Range(-10, 10), 0, Random.Range(-10, 10));</code></p><p><code>    }</code></p><p><code>}</code></p>"
   tag = "backlog"
   linkFiles = [ ]
   dueDate = ""

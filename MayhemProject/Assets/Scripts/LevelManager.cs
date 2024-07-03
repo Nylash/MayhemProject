@@ -44,7 +44,7 @@ public class LevelManager : MonoBehaviour
                     bool positionFound = TryGetRandomPosition(unit.Key, out spawnPosition);
                     if (positionFound)
                     {
-                        EnemyFactory.CreateEnemy(unit.Key, spawnPosition);
+                        EnemyFactory.CreateEnemy(unit.Key, spawnPosition, transform.GetChild(0));
                     }
                     else
                     {

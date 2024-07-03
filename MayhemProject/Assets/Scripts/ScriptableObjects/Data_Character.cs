@@ -72,6 +72,8 @@ public class Data_Character : ScriptableObject
     [HideInInspector] public UnityEvent<float> event_currentHPUpdated;
     #endregion
 
+
+    #region METHODS
     private void OnEnable()
     {
         if (event_dodgeAvailabilityUpdated == null)
@@ -79,4 +81,11 @@ public class Data_Character : ScriptableObject
         if (event_currentHPUpdated == null)
             event_currentHPUpdated = new UnityEvent<float>();
     }
+
+    public void InitializePlayer()
+    {
+        DodgeIsReady = true;
+        CurrentHP = MaxHP;
+    }
+    #endregion
 }
