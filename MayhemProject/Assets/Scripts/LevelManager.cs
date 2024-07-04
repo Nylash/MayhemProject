@@ -14,13 +14,15 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private float _chopperSpawnDetectionRadius;
     [SerializeField] private LayerMask _checkUnitLayer;
 
+    [SerializeField] private Transform _spawnZonesParent;
+
     private List<Collider> _zones = new List<Collider>();
 
     private const int MaxSpawnAttempts = 100;
 
     private void Awake()
     {
-        foreach (Collider t in GetComponentsInChildren<Collider>())
+        foreach (Collider t in _spawnZonesParent.GetComponentsInChildren<Collider>())
         {
             _zones.Add(t);
         }
@@ -29,13 +31,13 @@ public class LevelManager : MonoBehaviour
         //Dictionnary coming from game manager
         var unitsToSpawn = new Dictionary<string, int>
         {
-            { "Cop", 50 },
-            { "Tank", 5 },
-            { "Chopper", 3 }
+            { "Cop", 0 },
+            { "Tank", 20 },
+            { "Chopper", 0 }
         };
 
-        if (HasEnoughSpace(unitsToSpawn))
-        {
+        //if (HasEnoughSpace(unitsToSpawn))
+        //{
             foreach (var unit in unitsToSpawn)
             {
                 for (int i = 0; i < unit.Value; i++)
@@ -52,11 +54,11 @@ public class LevelManager : MonoBehaviour
                     }
                 }
             }
-        }
-        else
+        //}
+        /*else
         {
             Debug.LogWarning("Not enough space to spawn all units.");
-        }
+        }*/
     }
 
     private bool HasEnoughSpace(Dictionary<string, int> units)
@@ -107,6 +109,7 @@ public class LevelManager : MonoBehaviour
             Collider[] hitColliders = Physics.OverlapSphere(new Vector3(tentativePosition.x, 0, tentativePosition.z), GetSpawnDetectionRadius(unit), _checkUnitLayer);
             if (hitColliders.Length == 0)
             {
+                DebugExtension.DrawSphere(new Vector3(tentativePosition.x, 0, tentativePosition.z), GetSpawnDetectionRadius(unit), Color.green, 5);
                 position = tentativePosition;
                 return true;
             }

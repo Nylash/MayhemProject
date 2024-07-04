@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using BehaviourTree;
 using UnityEngine.UI;
+using UnityEngine.AI;
 
 public abstract class BasicEnemy_BT : BehaviourTree.BehaviourTree
 {
@@ -9,6 +10,7 @@ public abstract class BasicEnemy_BT : BehaviourTree.BehaviourTree
     #region COMPONENTS
     [SerializeField] private Image _HPBarFill;
     [SerializeField] private GameObject _HPBar;
+    protected NavMeshAgent _agent;
     #endregion
 
     #region VARIABLES
@@ -28,8 +30,10 @@ public abstract class BasicEnemy_BT : BehaviourTree.BehaviourTree
 
     protected override void Start()
     {
-        //base.Start();
+        _agent = GetComponent<NavMeshAgent>();
 
+        base.Start();
+        
         _HP = _enemyData.MaxHP;
         UpdateHPBar();
     }

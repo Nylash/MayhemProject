@@ -14,6 +14,15 @@ public class Utilities : MonoBehaviour
             return true;
         }
     }
+
+    public static float DistanceOnXZ(Vector3 pointA, Vector3 pointB)
+    {
+        float deltaX = pointA.x - pointB.x;
+        float deltaZ = pointA.z - pointB.z;
+
+        // Calculate the distance using the Pythagorean theorem
+        return Mathf.Sqrt(deltaX * deltaX + deltaZ * deltaZ);
+    }
     #endregion
 
     #region ENUMS
