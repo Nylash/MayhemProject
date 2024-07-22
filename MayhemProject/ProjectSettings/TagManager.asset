@@ -17,9 +17,9 @@ TagManager:
   - Enemy
   - EnemyAttack
   - Environnement
-  - Invisible
-  - 
-  - 
+  - SpawnZone
+  - PlayerDetection
+  - EnemyDetection
   - 
   - 
   - 

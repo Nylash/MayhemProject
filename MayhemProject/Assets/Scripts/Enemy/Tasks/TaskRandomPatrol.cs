@@ -64,7 +64,7 @@ public class TaskRandomPatrol : Node
     {
         NavMeshPath path = new NavMeshPath();
         _agent.CalculatePath(point, path);
-        Debug.LogWarning(path.status == NavMeshPathStatus.PathComplete);
+        //Debug.LogWarning(path.status == NavMeshPathStatus.PathComplete);
         return path.status == NavMeshPathStatus.PathComplete;
     }
 }

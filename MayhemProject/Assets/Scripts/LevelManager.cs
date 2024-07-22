@@ -1,7 +1,5 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class LevelManager : MonoBehaviour
 {
@@ -13,7 +11,10 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private float _chopperOffsetY;
     [SerializeField] private float _chopperSpawnDetectionRadius;
     [SerializeField] private LayerMask _checkUnitLayer;
-
+    [SerializeField] private int copToSpawn;
+    [SerializeField] private int tankToSpawn;
+    [SerializeField] private int chopperToSpawn;
+    //
     [SerializeField] private Transform _spawnZonesParent;
 
     private List<Collider> _zones = new List<Collider>();
@@ -31,13 +32,13 @@ public class LevelManager : MonoBehaviour
         //Dictionnary coming from game manager
         var unitsToSpawn = new Dictionary<string, int>
         {
-            { "Cop", 0 },
-            { "Tank", 20 },
-            { "Chopper", 0 }
+            { "Cop", copToSpawn },
+            { "Tank", tankToSpawn },
+            { "Chopper", chopperToSpawn }
         };
 
-        //if (HasEnoughSpace(unitsToSpawn))
-        //{
+        if (HasEnoughSpace(unitsToSpawn))
+        {
             foreach (var unit in unitsToSpawn)
             {
                 for (int i = 0; i < unit.Value; i++)
@@ -54,11 +55,11 @@ public class LevelManager : MonoBehaviour
                     }
                 }
             }
-        //}
-        /*else
+        }
+        else
         {
             Debug.LogWarning("Not enough space to spawn all units.");
-        }*/
+        }
     }
 
     private bool HasEnoughSpace(Dictionary<string, int> units)

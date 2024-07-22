@@ -54,6 +54,11 @@ public abstract class BasicEnemy_BT : BehaviourTree.BehaviourTree
         {
             Die();
         }
+
+        if(_root.GetData("Target") == null)
+        {
+            _root.SetData("Target", PlayerHealthManager.Instance.transform);
+        }
     }
 
     private void UpdateHPBar()
