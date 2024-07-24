@@ -10,7 +10,9 @@ public abstract class BasicEnemy_BT : BehaviourTree.BehaviourTree
     #region COMPONENTS
     [SerializeField] private Image _HPBarFill;
     [SerializeField] private GameObject _HPBar;
+    [SerializeField, Layer] protected int _attackLayer;
     protected NavMeshAgent _agent;
+    protected Coroutine _attackCoroutine;
     #endregion
 
     #region VARIABLES
@@ -45,6 +47,8 @@ public abstract class BasicEnemy_BT : BehaviourTree.BehaviourTree
     }
 
     public abstract void Initialize();
+
+    public abstract void Attack();
 
     public void TakeDamage(float damage)
     {

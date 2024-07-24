@@ -17,4 +17,9 @@ public class Tank_BT : BasicEnemy_BT
     {
 
     }
+
+    public override void Attack()
+    {
+        throw new System.NotImplementedException();
+    }
 }

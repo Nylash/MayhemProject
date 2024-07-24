@@ -36,5 +36,10 @@ public class ProjectileBehaviour : MonoBehaviour
             other.gameObject.GetComponentInParent<BasicEnemy_BT>().TakeDamage(_associatedWeapon.Damage);
             Destroy(gameObject);
         }
+        if (other.CompareTag("Player"))
+        {
+            PlayerHealthManager.Instance.TakeDamage(_associatedWeapon.Damage);
+            Destroy(gameObject);
+        }
     }
 }

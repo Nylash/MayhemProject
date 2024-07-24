@@ -1,13 +1,20 @@
 using BehaviourTree;
+using System.Transactions;
+using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UIElements;
 
 public class TaskAttackTarget : Node
 {
     private NavMeshAgent _navMeshAgent;
+    private BasicEnemy_BT _behaviourTree;
+    private Transform _transform;
 
-    public TaskAttackTarget(NavMeshAgent agent)
+    public TaskAttackTarget(NavMeshAgent agent, BasicEnemy_BT behaviourTree, Transform transform)
     {
         _navMeshAgent = agent;
+        _behaviourTree = behaviourTree;
+        _transform = transform;
     }
 
     public override NodeState Evaluate()
@@ -17,7 +24,9 @@ public class TaskAttackTarget : Node
             _navMeshAgent.isStopped = true;
         }
 
-        //FIRE !
+        _transform.LookAt(Root.GetData("Target") as Transform);
+
+        _behaviourTree.Attack();
 
         state = NodeState.SUCCESS;
         return state;
