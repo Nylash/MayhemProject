@@ -15,6 +15,7 @@ public class Utilities : MonoBehaviour
         }
     }
 
+    //Calculate a distance on 2D plane
     public static float DistanceOnXZ(Vector3 pointA, Vector3 pointB)
     {
         float deltaX = pointA.x - pointB.x;

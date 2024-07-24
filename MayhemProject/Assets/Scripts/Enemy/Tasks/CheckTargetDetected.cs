@@ -9,6 +9,9 @@ public class CheckTargetDetected : Node
         _detectionTrigger = detectionTrigger;
     }
 
+    //If root has a target auto succes.
+    //If trigger detect a target assign it to the root and succes.
+    //Otherwise no target detected, failure.
     public override NodeState Evaluate()
     {
         if(Root.GetData("Target") != null)

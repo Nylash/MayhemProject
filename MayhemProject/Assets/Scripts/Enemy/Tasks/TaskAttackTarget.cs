@@ -17,6 +17,9 @@ public class TaskAttackTarget : Node
         _transform = transform;
     }
 
+    //Stop movement
+    //Look to target
+    //Attack
     public override NodeState Evaluate()
     {
         if (!_navMeshAgent.isStopped)
@@ -28,7 +31,7 @@ public class TaskAttackTarget : Node
 
         _behaviourTree.Attack();
 
-        state = NodeState.SUCCESS;
+        state = NodeState.RUNNING;
         return state;
     }
 }

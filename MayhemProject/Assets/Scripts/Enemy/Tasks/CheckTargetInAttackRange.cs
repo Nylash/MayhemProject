@@ -9,6 +9,7 @@ public class CheckTargetInAttackRange : Node
         _attackTrigger = attackTrigger;
     }
 
+    //Simply check if the trigger is triggered.
     public override NodeState Evaluate()
     {
         if (_attackTrigger.IsTriggered)

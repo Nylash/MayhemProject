@@ -13,6 +13,7 @@ public class TaskReachTarget : Node
 
     public override NodeState Evaluate()
     {
+        //Restart navMeshAgent if needed and then set destination from root data
         if (_navMeshAgent.isStopped)
         {
             _navMeshAgent.isStopped = false;

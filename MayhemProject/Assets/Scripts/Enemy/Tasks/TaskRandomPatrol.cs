@@ -16,11 +16,13 @@ public class TaskRandomPatrol : Node
         _randomDistances = randomDistances;
         _stoppingDistance = stoppingDistance;
 
+        //Setup first patrol point
         _patrolPoint = GetRandomPointOnNavMesh(_randomDistances.x, _randomDistances.y, 10);
     }
 
     public override NodeState Evaluate()
     {
+        //If close enough to patrol point, define a new one and then go to it
         if(DistanceOnXZ(_agent.transform.position, _patrolPoint) < _stoppingDistance)
         {
             _patrolPoint = GetRandomPointOnNavMesh(_randomDistances.x, _randomDistances.y, 10);
@@ -30,10 +32,11 @@ public class TaskRandomPatrol : Node
             _agent.SetDestination(_patrolPoint);
         }
 
-        state = NodeState.SUCCESS;
+        state = NodeState.RUNNING;
         return state;
     }
 
+    //Get a random point on nav mesh
     private Vector3 GetRandomPointOnNavMesh(float minDist, float maxDist, int attempts)
     {
         for (int i = 0; i < attempts; i++)
@@ -48,6 +51,7 @@ public class TaskRandomPatrol : Node
                 float distance = Vector3.Distance(_agent.transform.position, navHit.position);
                 if (distance >= minDist && distance <= maxDist)
                 {
+                    //Check if point can be reach
                     if (IsPointValid(navHit.position))
                     {
                         DebugExtension.DrawSphere(navHit.position, .1f, Color.red, 1);
@@ -56,7 +60,8 @@ public class TaskRandomPatrol : Node
                 }
             }
         }
-        Debug.LogError("TaskRandomPatrol : Couldn't find random point on navMesh for " + _agent.name);
+        //Debug.LogError("TaskRandomPatrol : Couldn't find random point on navMesh for " + _agent.name);
+        //Can't get a good position, so we return agent position
         return _agent.transform.position; // Si aucune position valide n'est trouvée après les tentatives
     }
 
