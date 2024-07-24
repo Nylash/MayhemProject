@@ -130,7 +130,6 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
                 ProjectileZoneBehaviour _currentProjetileZoneBehaviourRef = _currentProjectileZone.GetComponent<ProjectileZoneBehaviour>();
 
                 _currentProjetileZoneBehaviourRef.Speed = weapon.TravelSpeed;
-                _currentProjetileZoneBehaviourRef.ZoneRadius = weapon.ZoneRadius;
                 _currentProjetileZoneBehaviourRef.Target = PlayerAimManager.Instance.ZoneAimTargets[i];
                 _currentProjetileZoneBehaviourRef.Trajectory = weapon.Trajectory;
                 _currentProjetileZoneBehaviourRef.AssociatedWeapon = weapon;

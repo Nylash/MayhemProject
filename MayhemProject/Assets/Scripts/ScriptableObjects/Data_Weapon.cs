@@ -50,6 +50,7 @@ public class Data_Weapon : ScriptableObject
     [SerializeField] private ZonePattern _pattern;
     [SerializeField] private float _distanceBetweenZones;
     [SerializeField] private AnimationCurve _trajectory;
+    [SerializeField] private AnimationCurve _explosionSpeed;
     #endregion
 
     #region MELEE INFO
@@ -93,6 +94,7 @@ public class Data_Weapon : ScriptableObject
         }
     }
     public AnimationCurve Trajectory { get => _trajectory; }
+    public AnimationCurve ExplosionSpeed { get => _explosionSpeed; }
     public float DistanceBetweenZones { get => _distanceBetweenZones; }
     public ZonePattern Pattern { get => _pattern; }
     public Sprite WeaponImage { get => _weaponImage; }
