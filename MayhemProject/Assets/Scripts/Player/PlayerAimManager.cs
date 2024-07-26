@@ -23,6 +23,7 @@ public class PlayerAimManager : Singleton<PlayerAimManager>
     private List<Vector3> _zoneAimTargets = new List<Vector3>();
     private List<Transform> _additionalsZoneAimGuideTransforms = new List<Transform>();
     private Vector3 _zoneAimParentInitialPos;
+    private float _zoneAimingRange;
     #region ACCESSORS
     public Vector2 AimDirection
     {
@@ -143,12 +144,27 @@ public class PlayerAimManager : Singleton<PlayerAimManager>
             {
                 target = ray.GetPoint(distance);
             }
-            _zoneAimGuideTransform.parent.position = new Vector3(target.x, _zoneAimGuideTransform.parent.position.y, target.z);
+
+            // Get the new position for the object
+            Vector3 movement = new Vector3(target.x, _zoneAimGuideTransform.parent.position.y, target.z);
+
+            // Calculate the distance of the new position from the center point. Keep the direction
+            // the same but clamp the length to the specified radius
+            Vector3 offset = movement - transform.position;
+            _zoneAimGuideTransform.parent.position = transform.position + Vector3.ClampMagnitude(offset, _zoneAimingRange);
         }
         else
         {
             //Using gamepad we move zone aim guide along aimDirection
             _zoneAimGuideTransform.parent.position += (new Vector3(_aimDirection.x, 0, _aimDirection.y) * _zoneAimGuideSpeed);
+
+            // Get the new position for the object
+            Vector3 movement = _zoneAimGuideTransform.parent.position + (new Vector3(_aimDirection.x, 0, _aimDirection.y) * _zoneAimGuideSpeed);
+
+            // Calculate the distance of the new position from the center point. Keep the direction
+            // the same but clamp the length to the specified radius
+            Vector3 offset = movement - transform.position;
+            _zoneAimGuideTransform.parent.position = transform.position + Vector3.ClampMagnitude(offset, _zoneAimingRange);
         }
 
         //Look to zone aim guide
@@ -194,8 +210,10 @@ public class PlayerAimManager : Singleton<PlayerAimManager>
         }
     }
 
-    public void StartZoneAiming(float zoneRadius, int numberOfZones, float offsetAdditionalsZones, ZonePattern pattern)
+    public void StartZoneAiming(float zoneRadius, int numberOfZones, float offsetAdditionalsZones, ZonePattern pattern, float range)
     {
+        _zoneAimingRange = range;
+
         //Activate zone aim guide and initializing it
         _zoneAimGuideTransform.localScale = Vector3.one * zoneRadius;
         _zoneAimGuideTransform.parent.localPosition = _zoneAimParentInitialPos;
@@ -207,6 +225,7 @@ public class PlayerAimManager : Singleton<PlayerAimManager>
         {
             _additionalsZoneAimGuideTransforms.Add(Instantiate(_zoneAimGuideObject, _zoneAimGuideTransform.position, _zoneAimGuideTransform.rotation).transform);
             _additionalsZoneAimGuideTransforms[i - 1].parent = _zoneAimGuideTransform.parent;
+            _additionalsZoneAimGuideTransforms[i - 1].localScale = Vector3.one * zoneRadius;
         }
         //Place the zone according to the pattern
         ApplyOffsetPattern(offsetAdditionalsZones, pattern);

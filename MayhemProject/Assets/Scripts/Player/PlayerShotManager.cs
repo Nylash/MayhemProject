@@ -230,7 +230,8 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
         {
             PlayerAimManager.Instance.StartZoneAiming(
                 _characterData.PrimaryWeapon.ZoneRadius, _characterData.PrimaryWeapon.ObjectsByShot,
-                _characterData.PrimaryWeapon.DistanceBetweenZones, _characterData.PrimaryWeapon.Pattern);
+                _characterData.PrimaryWeapon.DistanceBetweenZones, _characterData.PrimaryWeapon.Pattern,
+                _characterData.PrimaryWeapon.Range);
         }
 
         //Stock which weapon is currently used
@@ -264,7 +265,8 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
         {
             PlayerAimManager.Instance.StartZoneAiming(
                 _characterData.SecondaryWeapon.ZoneRadius, _characterData.SecondaryWeapon.ObjectsByShot,
-                _characterData.SecondaryWeapon.DistanceBetweenZones, _characterData.SecondaryWeapon.Pattern);
+                _characterData.SecondaryWeapon.DistanceBetweenZones, _characterData.SecondaryWeapon.Pattern,
+                _characterData.SecondaryWeapon.Range);
         }
 
         //Stock which weapon is currently used

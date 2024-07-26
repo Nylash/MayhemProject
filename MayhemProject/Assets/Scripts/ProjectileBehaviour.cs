@@ -41,5 +41,7 @@ public class ProjectileBehaviour : MonoBehaviour
             PlayerHealthManager.Instance.TakeDamage(_associatedWeapon.Damage);
             Destroy(gameObject);
         }
+        //If none of the two tests succeed, it then that we hit Environnement
+        Destroy(gameObject);
     }
 }
