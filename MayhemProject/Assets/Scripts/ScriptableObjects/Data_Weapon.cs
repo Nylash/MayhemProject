@@ -42,6 +42,7 @@ public class Data_Weapon : ScriptableObject
     #region PROJECTILE INFO
     [Header("Projectile informations")]
     [SerializeField] private float _inaccuracyAngle;
+    [SerializeField] private float _recoil;
     #endregion
 
     #region ZONE INFO
@@ -99,6 +100,7 @@ public class Data_Weapon : ScriptableObject
     public ZonePattern Pattern { get => _pattern; }
     public Sprite WeaponImage { get => _weaponImage; }
     public float WeaponImageSize { get => _weaponImageSize; }
+    public float Recoil { get => _recoil; }
     #endregion
 
     #region EVENTS

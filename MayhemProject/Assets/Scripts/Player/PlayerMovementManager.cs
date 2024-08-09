@@ -14,9 +14,13 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
     #region VARIABLES
     private PlayerBehaviorState _currentBehavior = PlayerBehaviorState.IDLE;
     private Vector2 _movementDirection;
+    private Vector3 _recoilDirection;
+    private float _recoilStrength;
     #region ACCESSORS
     public Vector2 MovementDirection { get => _movementDirection; }
     public PlayerBehaviorState CurrentBehavior { get => _currentBehavior; set => _currentBehavior = value; }
+    public Vector3 RecoilDirection { get => _recoilDirection; set => _recoilDirection = value; }
+    public float RecoilStrength { get => _recoilStrength; set => _recoilStrength = value; }
     #endregion
     #endregion
 
@@ -53,15 +57,21 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
     private void Update()
     {
         //Basic movement using Unity CharacterController, and apply gravity on Y to avoid floating
-        //Then set Angle float in running blend tree (angle between _movementDirection and AimDirection)
+        //Adding recoil
         if (_currentBehavior == PlayerBehaviorState.MOVE)
         {
-            _controller.Move(new Vector3(_movementDirection.x, -_characterData.GravityForce, _movementDirection.y) * _characterData.MovementSpeed * Time.deltaTime);
+            _controller.Move(
+                ((new Vector3(_movementDirection.x, -_characterData.GravityForce, _movementDirection.y) * _characterData.MovementSpeed) //Movement
+                + (_recoilDirection * _recoilStrength)) // Recoil
+                * Time.deltaTime);
         }
-        //Always applying gravity, also when not moving, only exception is while dodging
-        else if (_currentBehavior != PlayerBehaviorState.DODGE && !_controller.isGrounded)
+        //Apply gravity and recoil even on idle
+        else if (_currentBehavior == PlayerBehaviorState.IDLE)
         {
-            _controller.Move(new Vector3(0, -_characterData.GravityForce, 0) * _characterData.MovementSpeed * Time.deltaTime);
+            _controller.Move(
+                ((new Vector3(0, -_characterData.GravityForce, 0) * _characterData.MovementSpeed) //Gravity
+                + (_recoilDirection * _recoilStrength)) // Recoil
+                * Time.deltaTime);
         }
     }
 

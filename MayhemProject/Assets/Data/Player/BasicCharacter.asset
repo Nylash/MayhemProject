@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BasicCharacter
   m_EditorClassIdentifier: 
   _name: Basic
-  _primaryWeapon: {fileID: 11400000, guid: 51731385b8dcbc849afaee1e55fd02f3, type: 2}
+  _primaryWeapon: {fileID: 11400000, guid: 62e0a69247d5c064f9cd9ef5ff4336ce, type: 2}
   _secondaryWeapon: {fileID: 11400000, guid: a9c07980f01d099408df5cecb538e8ed, type: 2}
   _maxHP: 100
   _movementSpeed: 5
@@ -23,5 +23,8 @@ MonoBehaviour:
   _dodgeCD: 1
   _dodgeDuration: 0.3
   event_dodgeAvailabilityUpdated:
+    m_PersistentCalls:
+      m_Calls: []
+  event_currentHPUpdated:
     m_PersistentCalls:
       m_Calls: []

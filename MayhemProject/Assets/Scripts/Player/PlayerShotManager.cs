@@ -15,6 +15,7 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
     private bool _stopPrimaryShotCoroutine;
     private bool _stopSecondaryShotCoroutine;
     private Data_Weapon _currentWeaponUsed;
+    private Coroutine _recoilCoroutine;
     #region ACCESSORS
     public Data_Character CharacterData { get => _characterData; }
     #endregion
@@ -74,6 +75,8 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
     {
         while (CanShot(weapon))
         {
+            Vector3 aimDirection = new Vector3(PlayerAimManager.Instance.AimDirection.x, 0, PlayerAimManager.Instance.AimDirection.y);
+
             //Each loop create one object
             for (int i = 0; i < weapon.ObjectsByShot; i++)
             {
@@ -84,8 +87,7 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
                 ProjectileBehaviour _currentProjectileBehaviourRef = _currentProjectile.GetComponent<ProjectileBehaviour>();
 
                 float randomAngle = Random.Range(-weapon.InaccuracyAngle, weapon.InaccuracyAngle);
-                Vector3 shootDirection = Quaternion.AngleAxis(randomAngle, Vector3.up)
-                    * new Vector3(PlayerAimManager.Instance.AimDirection.x, 0, PlayerAimManager.Instance.AimDirection.y);
+                Vector3 shootDirection = Quaternion.AngleAxis(randomAngle, Vector3.up) * aimDirection;
                 _currentProjectileBehaviourRef.Direction = shootDirection.normalized;
                 _currentProjectileBehaviourRef.Speed = weapon.TravelSpeed;
                 _currentProjectileBehaviourRef.Range = weapon.Range;
@@ -98,6 +100,9 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
                 if (weapon.ObjectsByShot > 1)
                     yield return new WaitForSeconds(weapon.TimeBetweenObjectsOfOneShot);
             }
+            //Recoil
+            StartRecoil(-aimDirection, weapon.Recoil);
+
             yield return new WaitForSeconds(weapon.AttackSpeed);
 
             //Check if an input ask to stop the coroutine
@@ -386,5 +391,29 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
         {
             StartCoroutine(_characterData.SecondaryWeapon.Reload());
         }
+    }
+
+    private void StartRecoil(Vector3 direction, float recoil)
+    {
+        //Cancel previous recoil coroutine if there is one
+        if (_recoilCoroutine != null)
+        {
+            StopCoroutine(_recoilCoroutine);
+        }
+
+        _recoilCoroutine = StartCoroutine(Recoil(direction, recoil));
+    }
+
+    private IEnumerator Recoil(Vector3 direction, float recoil)
+    {
+        //Apply recoil, and progressively reduce it
+        PlayerMovementManager.Instance.RecoilDirection = direction;
+        PlayerMovementManager.Instance.RecoilStrength = recoil;
+        yield return new WaitForSeconds(.1f);
+        PlayerMovementManager.Instance.RecoilStrength /= 2;
+        yield return new WaitForSeconds(.2f);
+        PlayerMovementManager.Instance.RecoilStrength = 0f;
+
+        _recoilCoroutine = null;
     }
 }
