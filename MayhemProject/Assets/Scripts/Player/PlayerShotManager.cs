@@ -306,16 +306,15 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
 
     private void Reload()
     {
-        //Reload, in priority last used weapon, if it can't be reloaded try the others
-        if (_currentWeaponUsed.WeaponType == WeaponType.PROJECTILE)
+        if (_currentWeaponUsed.CanBeReloaded())
         {
             StartCoroutine(_currentWeaponUsed.Reload());
         }
-        else if (_characterData.PrimaryWeapon.WeaponType == WeaponType.PROJECTILE)
+        else if (_characterData.PrimaryWeapon.CanBeReloaded())
         {
             StartCoroutine(_characterData.PrimaryWeapon.Reload());
         }
-        else
+        else if (_characterData.SecondaryWeapon.CanBeReloaded())
         {
             StartCoroutine(_characterData.SecondaryWeapon.Reload());
         }

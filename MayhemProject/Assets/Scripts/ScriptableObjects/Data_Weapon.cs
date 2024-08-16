@@ -134,5 +134,22 @@ public class Data_Weapon : ScriptableObject
         IsReloading = false;
         IsBetweenShots = false;
     }
+
+    public bool CanBeReloaded()
+    {
+        if(_weaponType != WeaponType.PROJECTILE)
+        {
+            return false;
+        }
+        if (_isReloading)
+        {
+            return false;
+        }
+        if (_currentAmmunition == _magazineSize)
+        {
+            return false;
+        }
+        return true;
+    }
     #endregion
 }
