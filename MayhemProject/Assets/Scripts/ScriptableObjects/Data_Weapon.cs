@@ -61,8 +61,10 @@ public class Data_Weapon : ScriptableObject
 
     #region RUNTIME VARIABLES
     [Header("Variables")]
+    //Be sure to initiliaze those values in InitializeWeapon to avoid wrong starting values
     private int _currentAmmunition;
     private bool _isReloading;
+    private bool _isBetweenShots;
     #endregion
 
     #region ACCESSORS
@@ -101,6 +103,7 @@ public class Data_Weapon : ScriptableObject
     public Sprite WeaponImage { get => _weaponImage; }
     public float WeaponImageSize { get => _weaponImageSize; }
     public float Recoil { get => _recoil; }
+    public bool IsBetweenShots { get => _isBetweenShots; set => _isBetweenShots = value; }
     #endregion
 
     #region EVENTS
@@ -129,6 +132,7 @@ public class Data_Weapon : ScriptableObject
     {
         CurrentAmmunition = _magazineSize;
         IsReloading = false;
+        IsBetweenShots = false;
     }
     #endregion
 }

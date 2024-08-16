@@ -10,10 +10,8 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
     #endregion
 
     #region VARIABLES
-    private Coroutine _primaryShotCoroutine;
-    private Coroutine _secondaryShotCoroutine;
-    private bool _stopPrimaryShotCoroutine;
-    private bool _stopSecondaryShotCoroutine;
+    private bool _primaryShot;
+    private bool _secondaryShot;
     private Data_Weapon _currentWeaponUsed;
     private Coroutine _recoilCoroutine;
     #region ACCESSORS
@@ -28,17 +26,17 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
     #endregion
 
     #region EVENTS
-    private UnityEvent<Data_Weapon, bool> event_primaryShotInputEnded;
-    private UnityEvent<Data_Weapon, bool> event_secondaryShotInputEnded;  
+    private UnityEvent event_primaryShotInputEnded;
+    private UnityEvent event_secondaryShotInputEnded;  
     #endregion
 
     private void OnEnable()
     {
         _controlsMap.Gameplay.Enable();
         if (event_primaryShotInputEnded == null)
-            event_primaryShotInputEnded = new UnityEvent<Data_Weapon, bool>();
+            event_primaryShotInputEnded = new UnityEvent();
         if (event_secondaryShotInputEnded == null)
-            event_secondaryShotInputEnded = new UnityEvent<Data_Weapon, bool>();
+            event_secondaryShotInputEnded = new UnityEvent();
     } 
     private void OnDisable() => _controlsMap.Gameplay.Disable();
 
@@ -60,71 +58,77 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
 
         _currentWeaponUsed = _characterData.PrimaryWeapon;
 
-        //Subscribe to the event if the weapon is of type ZONE
+        //Subscribe to the event if the weapon is of type ZONE, so when we release the input (we stop aiming) the shoot function is called
         if(_characterData.PrimaryWeapon.WeaponType == WeaponType.ZONE)
         {
-            event_primaryShotInputEnded.AddListener(StartZoneWeaponShooting);
+            event_primaryShotInputEnded.AddListener(() 
+                => StartCoroutine(ZoneWeaponShooting(_characterData.PrimaryWeapon)));
         }
         if(_characterData.SecondaryWeapon.WeaponType == WeaponType.ZONE)
         {
-            event_secondaryShotInputEnded.AddListener(StartZoneWeaponShooting);
+            event_secondaryShotInputEnded.AddListener(() 
+                => StartCoroutine(ZoneWeaponShooting(_characterData.SecondaryWeapon)));
         }
     }
 
-    private IEnumerator ProjectileWeaponShooting(Data_Weapon weapon, bool isPrimaryWeapon)
+    private void Update()
     {
-        while (CanShot(weapon))
+        if (_primaryShot)
         {
-            Vector3 aimDirection = new Vector3(PlayerAimManager.Instance.AimDirection.x, 0, PlayerAimManager.Instance.AimDirection.y);
-
-            //Each loop create one object
-            for (int i = 0; i < weapon.ObjectsByShot; i++)
+            if (CanShot(_characterData.PrimaryWeapon))
             {
-                //Spawn projectile and configure it
-                weapon.CurrentAmmunition--;
-
-                GameObject _currentProjectile = Instantiate(weapon.Object, transform.position, Quaternion.identity);
-                ProjectileBehaviour _currentProjectileBehaviourRef = _currentProjectile.GetComponent<ProjectileBehaviour>();
-
-                float randomAngle = Random.Range(-weapon.InaccuracyAngle, weapon.InaccuracyAngle);
-                Vector3 shootDirection = Quaternion.AngleAxis(randomAngle, Vector3.up) * aimDirection;
-                _currentProjectileBehaviourRef.Direction = shootDirection.normalized;
-                _currentProjectileBehaviourRef.Speed = weapon.TravelSpeed;
-                _currentProjectileBehaviourRef.Range = weapon.Range;
-                _currentProjectileBehaviourRef.AssociatedWeapon = weapon;
-                _currentProjectile.layer = _attackLayer;
-
-                _currentProjectile.SetActive(true);
-
-                //Little security to avoid waiting if there is only one object to spawn
-                if (weapon.ObjectsByShot > 1)
-                    yield return new WaitForSeconds(weapon.TimeBetweenObjectsOfOneShot);
+                //Directly call ProjectileShooting since the boolean stay at false when this is a zone weapon
+                StartCoroutine(ProjectileWeaponShooting(_characterData.PrimaryWeapon));
             }
-            //Recoil
-            StartRecoil(-aimDirection, weapon.Recoil);
-
-            yield return new WaitForSeconds(weapon.AttackSpeed);
-
-            //Check if an input ask to stop the coroutine
-            if (CheckCoroutineNeedToStop(isPrimaryWeapon))
-                yield break;
         }
-        //Stop the coroutine since the weapon cannot shoot anymore
-        if (isPrimaryWeapon)
+        else if (_secondaryShot)
         {
-            StopPrimaryCoroutine();
-            yield break;
-        }
-        else
-        {
-            StopSecondaryCoroutine();
-            yield break;
+            if (CanShot(_characterData.SecondaryWeapon))
+            {
+                //Directly call ProjectileShooting since the boolean stay at false when this is a zone weapon
+                StartCoroutine(ProjectileWeaponShooting(_characterData.SecondaryWeapon));
+            }
         }
     }
 
-    private IEnumerator ZoneWeaponShooting(Data_Weapon weapon, bool isPrimaryWeapon)
+    private IEnumerator ProjectileWeaponShooting(Data_Weapon weapon)
     {
-        if( CanShot(weapon) )
+        Vector3 aimDirection = new Vector3(PlayerAimManager.Instance.AimDirection.x, 0, PlayerAimManager.Instance.AimDirection.y);
+
+        //Each loop create one object
+        for (int i = 0; i < weapon.ObjectsByShot; i++)
+        {
+            //Spawn projectile and configure it
+            weapon.CurrentAmmunition--;
+
+            GameObject _currentProjectile = Instantiate(weapon.Object, transform.position, Quaternion.identity);
+            ProjectileBehaviour _currentProjectileBehaviourRef = _currentProjectile.GetComponent<ProjectileBehaviour>();
+
+            float randomAngle = Random.Range(-weapon.InaccuracyAngle, weapon.InaccuracyAngle);
+            Vector3 shootDirection = Quaternion.AngleAxis(randomAngle, Vector3.up) * aimDirection;
+            _currentProjectileBehaviourRef.Direction = shootDirection.normalized;
+            _currentProjectileBehaviourRef.Speed = weapon.TravelSpeed;
+            _currentProjectileBehaviourRef.Range = weapon.Range;
+            _currentProjectileBehaviourRef.AssociatedWeapon = weapon;
+            _currentProjectile.layer = _attackLayer;
+
+            _currentProjectile.SetActive(true);
+
+            //Little security to avoid waiting if there is only one object to spawn
+            if (weapon.ObjectsByShot > 1)
+                yield return new WaitForSeconds(weapon.TimeBetweenObjectsOfOneShot);
+        }
+        //Recoil
+        StartRecoil(-aimDirection, weapon.Recoil);
+
+        //Fire rate
+        weapon.IsBetweenShots = true;
+        StartCoroutine(FireRateCoroutine(weapon));
+    }
+
+    private IEnumerator ZoneWeaponShooting(Data_Weapon weapon)
+    {
+        if(CanShot(weapon))
         {
             weapon.CurrentAmmunition--;
             //Each loop create one object
@@ -148,95 +152,42 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
             }
             //Auto reload
             StartCoroutine(weapon.Reload());
-        }
 
-        //Stop the coroutine, zone weapon only fire once
-        if (isPrimaryWeapon)
-        {
-            StopPrimaryCoroutine();
-            yield break;
-        }
-        else
-        {
-            StopSecondaryCoroutine();
-            yield break;
-        }
-    }
-
-    //Method used to start ZoneWeaponShooting coroutine
-    private void StartZoneWeaponShooting(Data_Weapon weapon, bool isPrimaryWeapon)
-    {
-        if (isPrimaryWeapon)
-        {
-            _primaryShotCoroutine = StartCoroutine(ZoneWeaponShooting(weapon, true));
-        }
-        else
-        {
-            _secondaryShotCoroutine = StartCoroutine(ZoneWeaponShooting(weapon, false));
-        }
-    }
-
-    //Call the correct method depending on primaryWeapon weaponType
-    private void PrimaryShooting()
-    {
-        switch (_characterData.PrimaryWeapon.WeaponType)
-        {
-            case WeaponType.PROJECTILE:
-                _primaryShotCoroutine = StartCoroutine(ProjectileWeaponShooting(_characterData.PrimaryWeapon, true));
-                break;
-            case WeaponType.ZONE:
-                //Nothing, we subscribe to the event at the start
-                break;
-            case WeaponType.MELEE:
-                break;
-        }
-    }
-
-    //Call the correct method depending on secondaryWeapon weaponType
-    private void SecondaryShooting()
-    {
-        switch (_characterData.SecondaryWeapon.WeaponType)
-        {
-            case WeaponType.PROJECTILE:
-                _secondaryShotCoroutine = StartCoroutine(ProjectileWeaponShooting(_characterData.SecondaryWeapon, false));
-                break;
-            case WeaponType.ZONE:
-                //Nothing, we subscribe to the event at the start
-                break;
-            case WeaponType.MELEE:
-                break;
-        }
+            //Fire rate
+            weapon.IsBetweenShots = false;
+            StartCoroutine(FireRateCoroutine(weapon));
+       }
     }
 
     private void StartPrimaryShot()
     {
-        //Cancel secondaryShotCoroutine if currently used
-        if (_secondaryShotCoroutine != null)
+        //Cancel secondaryShot if currently used
+        if (_secondaryShot)
         {
-            //Flag to true, so when next iteration of object spawn is done the coroutine will be stopped
-            _stopSecondaryShotCoroutine = true;
+            _secondaryShot = false;
         }
 
         if (PlayerAimManager.Instance.IsZoneAiming)
         {
-            //Stop zone aiming if needed
+            //Stop zone aiming with secondary weapon if needed
             if (_characterData.SecondaryWeapon.WeaponType == WeaponType.ZONE)
             {
                 PlayerAimManager.Instance.StopZoneAiming();
             }
         }
 
-        //Start shooting
-        _stopPrimaryShotCoroutine = false;
-        PrimaryShooting();
-
-        //Start zone aiming if needed
+        //Start zone aiming with primary weapon if needed
         if(_characterData.PrimaryWeapon.WeaponType == WeaponType.ZONE)
         {
             PlayerAimManager.Instance.StartZoneAiming(
                 _characterData.PrimaryWeapon.ZoneRadius, _characterData.PrimaryWeapon.ObjectsByShot,
                 _characterData.PrimaryWeapon.DistanceBetweenZones, _characterData.PrimaryWeapon.Pattern,
                 _characterData.PrimaryWeapon.Range);
+        }
+        else
+        {
+            //Pass bool at true for Update if this is not a zone weapon
+            _primaryShot = true;
         }
 
         //Stock which weapon is currently used
@@ -245,33 +196,33 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
 
     private void StartSecondaryShot()
     {
-        //Cancel primaryShotCoroutine if currently used
-        if (_primaryShotCoroutine != null)
+        //Cancel primaryShot if currently used
+        if (_primaryShot)
         {
-            //Flag to true, so when next iteration of object spawn is done the coroutine will be stopped
-            _stopPrimaryShotCoroutine = true;
+            _primaryShot = false;
         }
 
         if (PlayerAimManager.Instance.IsZoneAiming)
         {
-            //Stop zone aiming if needed
+            //Stop zone aiming with primary weapon if needed
             if (_characterData.PrimaryWeapon.WeaponType == WeaponType.ZONE)
             {
                 PlayerAimManager.Instance.StopZoneAiming();
             }
         }
 
-        //Start shooting
-        _stopSecondaryShotCoroutine = false;
-        SecondaryShooting();
-
-        //Start zone aiming if needed
+        //Start zone aiming with secondary weapon if needed
         if (_characterData.SecondaryWeapon.WeaponType == WeaponType.ZONE)
         {
             PlayerAimManager.Instance.StartZoneAiming(
                 _characterData.SecondaryWeapon.ZoneRadius, _characterData.SecondaryWeapon.ObjectsByShot,
                 _characterData.SecondaryWeapon.DistanceBetweenZones, _characterData.SecondaryWeapon.Pattern,
                 _characterData.SecondaryWeapon.Range);
+        }
+        else
+        {
+            //Pass bool at true for Update if this is not a zone weapon
+            _secondaryShot = true;
         }
 
         //Stock which weapon is currently used
@@ -280,8 +231,7 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
 
     private void StopPrimaryShot()
     {
-        //Flag to true, so when next iteration of object spawn is done the coroutine will be stopped
-        _stopPrimaryShotCoroutine = true;
+        _primaryShot = false;
 
         //Stop zone aiming if needed
         if (_characterData.PrimaryWeapon.WeaponType == WeaponType.ZONE)
@@ -289,8 +239,8 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
             PlayerAimManager.Instance.StopZoneAiming();
         }
 
-        //Invoke event stop shooting
-        event_primaryShotInputEnded.Invoke(_characterData.PrimaryWeapon, true);
+        //Invoke event stop shooting, so if weapon is a zone weapon it can shoot
+        event_primaryShotInputEnded.Invoke();
 
         //If other input is pressed we directly use it
         if (_controlsMap.Gameplay.SecondaryShot.IsPressed())
@@ -301,8 +251,7 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
 
     private void StopSecondaryShot()
     {
-        //Flag to true, so when next iteration of object spawn is done the coroutine will be stopped
-        _stopSecondaryShotCoroutine = true;
+        _secondaryShot = false;
 
         //Stop zone aiming if needed
         if (_characterData.SecondaryWeapon.WeaponType == WeaponType.ZONE)
@@ -310,8 +259,8 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
             PlayerAimManager.Instance.StopZoneAiming();
         }
 
-        //Invoke event stop shooting
-        event_secondaryShotInputEnded.Invoke(_characterData.SecondaryWeapon, false);
+        //Invoke event stop shooting, so if weapon is a zone weapon it can shoot
+        event_secondaryShotInputEnded.Invoke();
 
         //If other input is pressed we directly use it
         if (_controlsMap.Gameplay.PrimaryShot.IsPressed())
@@ -322,6 +271,12 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
 
     private bool CanShot(Data_Weapon weapon)
     {
+        //Check if weapon isn't between shots
+        if (weapon.IsBetweenShots)
+        {
+            return false;
+        }
+
         //Check if weapon isn't reloading
         if (weapon.IsReloading)
         {
@@ -342,44 +297,17 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
         return true;
     }
 
-    //Check flag stop coroutine
-    private bool CheckCoroutineNeedToStop(bool primaryWeapon)
+    private IEnumerator FireRateCoroutine(Data_Weapon weapon)
     {
-        if (primaryWeapon)
-        {
-            if (_stopPrimaryShotCoroutine)
-            {
-                StopPrimaryCoroutine();
-                return true;
-            }
-        }
-        else
-        {
-            if (_stopSecondaryShotCoroutine)
-            {
-                StopSecondaryCoroutine();
-                return true;
-            }
-        }
-        return false;
+        yield return new WaitForSeconds(weapon.AttackSpeed);
+
+        weapon.IsBetweenShots = false;
     }
 
-    private void StopPrimaryCoroutine()
-    {
-        _stopPrimaryShotCoroutine = false;
-        _primaryShotCoroutine = null;
-    }
-
-    private void StopSecondaryCoroutine()
-    {
-        _stopSecondaryShotCoroutine = false;
-        _secondaryShotCoroutine = null;
-    }
-
-    //Reload, in priority last used weapon, if it can't be reloaded try other the other
     private void Reload()
     {
-        if(_currentWeaponUsed.WeaponType  == WeaponType.PROJECTILE)
+        //Reload, in priority last used weapon, if it can't be reloaded try the others
+        if (_currentWeaponUsed.WeaponType == WeaponType.PROJECTILE)
         {
             StartCoroutine(_currentWeaponUsed.Reload());
         }
