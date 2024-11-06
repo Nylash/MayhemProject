@@ -48,7 +48,7 @@ public abstract class BasicEnemy_BT : BehaviourTree.BehaviourTree
 
     public abstract void Initialize();
 
-    public abstract void Attack();
+    public abstract void Attack(Data_Weapon weapon);
 
     public void TakeDamage(float damage)
     {

@@ -22,7 +22,7 @@ public class Cop_BT : BasicEnemy_BT
             {
                 new CheckTargetInTrigger(_attackTrigger),
                 new TaskStopMovement(_agent),
-                new TaskAttackTarget(this, transform)
+                new TaskAttackTarget(this, transform, _weapon)
             }),
             //Movement sequence
             new Sequence(new List<Node>
@@ -43,38 +43,38 @@ public class Cop_BT : BasicEnemy_BT
 
     }
 
-    public override void Attack()
+    public override void Attack(Data_Weapon weapon)
     {
         if(_attackCoroutine == null)
         {
-            _attackCoroutine = StartCoroutine(Fire());
+            _attackCoroutine = StartCoroutine(Fire(weapon));
         }
     }
 
-    private IEnumerator Fire()
+    private IEnumerator Fire(Data_Weapon weapon)
     {
         //Each loop create one object
-        for (int i = 0; i < _weapon.ObjectsByShot; i++)
+        for (int i = 0; i < weapon.ObjectsByShot; i++)
         {
-            GameObject _currentProjectile = Instantiate(_weapon.Object, transform.position, Quaternion.identity);
+            GameObject _currentProjectile = Instantiate(weapon.Object, transform.position, Quaternion.identity);
             ProjectileBehaviour _currentProjectileBehaviourRef = _currentProjectile.GetComponent<ProjectileBehaviour>();
 
-            float randomAngle = Random.Range(-_weapon.InaccuracyAngle, _weapon.InaccuracyAngle);
+            float randomAngle = Random.Range(-weapon.InaccuracyAngle, weapon.InaccuracyAngle);
 
             Vector3 shootDirection = Quaternion.AngleAxis(randomAngle, Vector3.up) * transform.forward;
             _currentProjectileBehaviourRef.Direction = shootDirection.normalized;
-            _currentProjectileBehaviourRef.Speed = _weapon.TravelSpeed;
-            _currentProjectileBehaviourRef.Range = _weapon.Range;
-            _currentProjectileBehaviourRef.AssociatedWeapon = _weapon;
+            _currentProjectileBehaviourRef.Speed = weapon.TravelSpeed;
+            _currentProjectileBehaviourRef.Range = weapon.Range;
+            _currentProjectileBehaviourRef.AssociatedWeapon = weapon;
             _currentProjectile.layer = _attackLayer;
 
             _currentProjectile.SetActive(true);
 
             //Little security to avoid waiting if there is only one object to spawn
-            if (_weapon.ObjectsByShot > 1)
-                yield return new WaitForSeconds(_weapon.TimeBetweenObjectsOfOneShot);
+            if (weapon.ObjectsByShot > 1)
+                yield return new WaitForSeconds(weapon.TimeBetweenObjectsOfOneShot);
         }
-        yield return new WaitForSeconds(_weapon.AttackSpeed);
+        yield return new WaitForSeconds(weapon.AttackSpeed);
         _attackCoroutine = null;
     }
 }
