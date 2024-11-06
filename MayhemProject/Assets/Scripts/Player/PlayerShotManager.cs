@@ -299,7 +299,7 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
 
     private IEnumerator FireRateCoroutine(Data_Weapon weapon)
     {
-        yield return new WaitForSeconds(weapon.AttackSpeed);
+        yield return new WaitForSeconds(weapon.FireRate);
 
         weapon.IsBetweenShots = false;
     }

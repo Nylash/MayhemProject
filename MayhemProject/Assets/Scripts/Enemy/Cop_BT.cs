@@ -11,7 +11,6 @@ public class Cop_BT : BasicEnemy_BT
     [Header("OTHER")]
     [SerializeField] private TriggerDetection _detectionTrigger;
     [SerializeField] private TriggerDetection _attackTrigger;
-    [SerializeField] private Data_Weapon _weapon;
 
     protected override Node SetupTree()
     {
@@ -22,7 +21,7 @@ public class Cop_BT : BasicEnemy_BT
             {
                 new CheckTargetInTrigger(_attackTrigger),
                 new TaskStopMovement(_agent),
-                new TaskAttackTarget(this, transform, _weapon)
+                new TaskAttackTarget(this, transform, _weapons[0])
             }),
             //Movement sequence
             new Sequence(new List<Node>
@@ -45,17 +44,20 @@ public class Cop_BT : BasicEnemy_BT
 
     public override void Attack(Data_Weapon weapon)
     {
-        if(_attackCoroutine == null)
+        if (CanShot(weapon))
         {
-            _attackCoroutine = StartCoroutine(Fire(weapon));
+            StartCoroutine(Fire(weapon));
         }
     }
 
     private IEnumerator Fire(Data_Weapon weapon)
     {
+        WeaponStatus currentWeaponStatus = GetWeaponStatus(weapon);
         //Each loop create one object
         for (int i = 0; i < weapon.ObjectsByShot; i++)
         {
+            currentWeaponStatus.CurrentAmmunition--;
+
             GameObject _currentProjectile = Instantiate(weapon.Object, transform.position, Quaternion.identity);
             ProjectileBehaviour _currentProjectileBehaviourRef = _currentProjectile.GetComponent<ProjectileBehaviour>();
 
@@ -74,7 +76,10 @@ public class Cop_BT : BasicEnemy_BT
             if (weapon.ObjectsByShot > 1)
                 yield return new WaitForSeconds(weapon.TimeBetweenObjectsOfOneShot);
         }
-        yield return new WaitForSeconds(weapon.AttackSpeed);
-        _attackCoroutine = null;
+        currentWeaponStatus.IsBetweenShots = true;
+        _weaponsStatus[weapon] = currentWeaponStatus;
+        yield return new WaitForSeconds(weapon.FireRate);
+        currentWeaponStatus.IsBetweenShots = false;
+        _weaponsStatus[weapon] = currentWeaponStatus;
     }
 }

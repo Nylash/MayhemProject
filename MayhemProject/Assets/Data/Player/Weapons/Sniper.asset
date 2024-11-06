@@ -17,7 +17,7 @@ MonoBehaviour:
   _weaponImage: {fileID: 0}
   _weaponImageSize: 1
   _damage: 100
-  _attackSpeed: 1
+  _fireRate: 1
   hint: Be sure to only fill fields which correspond to weapon type, let the others
     null (0 for numerical values)
   _object: {fileID: 1511395521060662260, guid: f5a11531b6de89140a239a1a1001c99a, type: 3}
@@ -44,7 +44,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  _attackArea: {fileID: 0}
   event_weapondIsReloadingUpdated:
     m_PersistentCalls:
       m_Calls: []

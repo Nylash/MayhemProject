@@ -20,7 +20,7 @@ public class Data_Weapon : ScriptableObject
     #region COMMONS INFO
     [Header("Commons informations")]
     [SerializeField] private float _damage;
-    [SerializeField] private float _attackSpeed;
+    [SerializeField] private float _fireRate;
     #endregion
 
 #pragma warning disable CS0414
@@ -65,7 +65,7 @@ public class Data_Weapon : ScriptableObject
     public string WeaponName { get => _weaponName; }
     public WeaponType WeaponType { get => _weaponType; }
     public float Damage { get => _damage; }
-    public float AttackSpeed { get => _attackSpeed; }
+    public float FireRate { get => _fireRate; }
     public GameObject Object { get => _object; }
     public float Range { get => _range; }
     public float TravelSpeed { get => _travelSpeed; }

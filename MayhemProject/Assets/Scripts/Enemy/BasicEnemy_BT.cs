@@ -3,6 +3,8 @@ using UnityEngine;
 using BehaviourTree;
 using UnityEngine.UI;
 using UnityEngine.AI;
+using System.Collections.Generic;
+using System.Collections;
 
 public abstract class BasicEnemy_BT : BehaviourTree.BehaviourTree
 {
@@ -11,8 +13,9 @@ public abstract class BasicEnemy_BT : BehaviourTree.BehaviourTree
     [SerializeField] private Image _HPBarFill;
     [SerializeField] private GameObject _HPBar;
     [SerializeField, Layer] protected int _attackLayer;
+    [SerializeField] protected List<Data_Weapon> _weapons = new List<Data_Weapon>();
     protected NavMeshAgent _agent;
-    protected Coroutine _attackCoroutine;
+    protected Dictionary<Data_Weapon, WeaponStatus> _weaponsStatus;
     #endregion
 
     #region VARIABLES
@@ -33,6 +36,12 @@ public abstract class BasicEnemy_BT : BehaviourTree.BehaviourTree
     protected override void Start()
     {
         _agent = GetComponent<NavMeshAgent>();
+        _weaponsStatus = new Dictionary<Data_Weapon, WeaponStatus>();
+
+        for (int i = 0; i < _weapons.Count; i++)
+        {
+            _weaponsStatus[_weapons[i]] = new WeaponStatus(_weapons[i].MagazineSize);
+        }
 
         base.Start();
         
@@ -77,5 +86,66 @@ public abstract class BasicEnemy_BT : BehaviourTree.BehaviourTree
     private void Die()
     {
         Destroy(gameObject);
+    }
+
+    protected bool CanShot(Data_Weapon weapon)
+    {
+        //Check if weapon isn't between shots
+        if (GetWeaponStatus(weapon).IsBetweenShots)
+        {
+            return false;
+        }
+
+        //Check if weapon isn't reloading
+        if (GetWeaponStatus(weapon).IsReloading)
+        {
+            return false;
+        }
+
+        //Check remaining ammunition
+        if (GetWeaponStatus(weapon).CurrentAmmunition - weapon.ObjectsByShot < 0)
+        {
+            //Directly change weapon status (to avoid several coroutine start)
+            WeaponStatus currentWeaponStatus = GetWeaponStatus(weapon);
+            currentWeaponStatus.IsReloading = true;
+            _weaponsStatus[weapon] = currentWeaponStatus;
+            StartCoroutine(Reload(weapon));
+            return false;
+        }
+        return true;
+    }
+
+    private IEnumerator Reload(Data_Weapon weapon)
+    {
+        yield return new WaitForSeconds(weapon.ReloadDuration);
+        WeaponStatus currentWeaponStatus = GetWeaponStatus(weapon);
+        currentWeaponStatus.CurrentAmmunition = weapon.MagazineSize;
+        currentWeaponStatus.IsReloading = false;
+        _weaponsStatus[weapon] = currentWeaponStatus;
+    }
+
+    protected struct WeaponStatus
+    {
+        public int CurrentAmmunition;
+        public bool IsReloading;
+        public bool IsBetweenShots;
+
+        public WeaponStatus(int ammunition)
+        {
+            CurrentAmmunition = ammunition;
+            IsReloading = false;
+            IsBetweenShots = false;
+        }
+    }
+
+    protected WeaponStatus GetWeaponStatus(Data_Weapon weapon)
+    {
+        if(_weaponsStatus.TryGetValue(weapon, out WeaponStatus result))
+        {
+            return result;
+        }
+        //Return default weaponStatus (should never occur)
+        Debug.LogError("GetWeaponsStatus with a weapon not in the dictionnary.");
+        return new WeaponStatus(0);
     }
 }
