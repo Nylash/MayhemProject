@@ -57,7 +57,46 @@ public abstract class BasicEnemy_BT : BehaviourTree.BehaviourTree
 
     public abstract void Initialize();
 
-    public abstract void Attack(Data_Weapon weapon);
+    public void Attack(Data_Weapon weapon)
+    {
+        if (CanShot(weapon))
+        {
+            StartCoroutine(Fire(weapon));
+        }
+    }
+
+    private IEnumerator Fire(Data_Weapon weapon)
+    {
+        WeaponStatus currentWeaponStatus = GetWeaponStatus(weapon);
+        //Each loop create one object
+        for (int i = 0; i < weapon.ObjectsByShot; i++)
+        {
+            currentWeaponStatus.CurrentAmmunition--;
+
+            GameObject _currentProjectile = Instantiate(weapon.Object, transform.position, Quaternion.identity);
+            ProjectileBehaviour _currentProjectileBehaviourRef = _currentProjectile.GetComponent<ProjectileBehaviour>();
+
+            float randomAngle = UnityEngine.Random.Range(-weapon.InaccuracyAngle, weapon.InaccuracyAngle);
+
+            Vector3 shootDirection = Quaternion.AngleAxis(randomAngle, Vector3.up) * transform.forward;
+            _currentProjectileBehaviourRef.Direction = shootDirection.normalized;
+            _currentProjectileBehaviourRef.Speed = weapon.TravelSpeed;
+            _currentProjectileBehaviourRef.Range = weapon.Range;
+            _currentProjectileBehaviourRef.AssociatedWeapon = weapon;
+            _currentProjectile.layer = _attackLayer;
+
+            _currentProjectile.SetActive(true);
+
+            //Little security to avoid waiting if there is only one object to spawn
+            if (weapon.ObjectsByShot > 1)
+                yield return new WaitForSeconds(weapon.TimeBetweenObjectsOfOneShot);
+        }
+        currentWeaponStatus.IsBetweenShots = true;
+        _weaponsStatus[weapon] = currentWeaponStatus;
+        yield return new WaitForSeconds(weapon.FireRate);
+        currentWeaponStatus.IsBetweenShots = false;
+        _weaponsStatus[weapon] = currentWeaponStatus;
+    }
 
     public void TakeDamage(float damage)
     {

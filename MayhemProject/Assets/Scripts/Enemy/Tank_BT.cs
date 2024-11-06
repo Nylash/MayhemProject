@@ -17,9 +17,4 @@ public class Tank_BT : BasicEnemy_BT
     {
 
     }
-
-    public override void Attack(Data_Weapon weapon)
-    {
-        throw new System.NotImplementedException();
-    }
 }
