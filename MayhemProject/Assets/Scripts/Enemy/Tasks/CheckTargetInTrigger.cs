@@ -1,18 +1,17 @@
 using BehaviourTree;
 
-public class CheckTargetInAttackRange : Node
+public class CheckTargetInTrigger : Node
 {
-    private TriggerDetection _attackTrigger;
-
-    public CheckTargetInAttackRange(TriggerDetection attackTrigger)
+    private TriggerDetection _trigger;
+    public CheckTargetInTrigger(TriggerDetection trigger)
     {
-        _attackTrigger = attackTrigger;
+        _trigger = trigger;
     }
 
     //Simply check if the trigger is triggered.
     public override NodeState Evaluate()
     {
-        if (_attackTrigger.IsTriggered)
+        if (_trigger.IsTriggered)
         {
             state = NodeState.SUCCESS;
             return state;
