@@ -21,12 +21,14 @@ public class Cop_BT : BasicEnemy_BT
             new Sequence(new List<Node>
             {
                 new CheckTargetInAttackRange(_attackTrigger),
-                new TaskAttackTarget(_agent, this, transform)
+                new TaskStopMovement(_agent),
+                new TaskAttackTarget(this, transform)
             }),
             //Movement sequence
             new Sequence(new List<Node>
             {
                 new CheckTargetDetected(_detectionTrigger),
+                new TaskStartMovement(_agent),
                 new TaskReachTarget(_agent)
             }),
             //Idle
