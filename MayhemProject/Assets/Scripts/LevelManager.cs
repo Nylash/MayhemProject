@@ -23,9 +23,9 @@ public class LevelManager : MonoBehaviour
 
     private void Awake()
     {
-        foreach (Collider t in _spawnZonesParent.GetComponentsInChildren<Collider>())
+        foreach (Collider c in _spawnZonesParent.GetComponentsInChildren<Collider>())
         {
-            _zones.Add(t);
+            _zones.Add(c);
         }
 
         //Call GameManager for level initialization

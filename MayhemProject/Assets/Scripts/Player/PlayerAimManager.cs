@@ -263,6 +263,7 @@ public class PlayerAimManager : Singleton<PlayerAimManager>
         _zoneAimGuideTransform.localPosition = Vector3.zero;
     }
 
+    //Calculate additionals zones positions
     private void ApplyOffsetPattern(float offset, ZonePattern pattern)
     {
         bool isOdd = IsIntOdd(_additionalsZoneAimGuideTransforms.Count + 1);

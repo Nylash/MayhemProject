@@ -77,7 +77,7 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
         {
             if (CanShot(_characterData.PrimaryWeapon))
             {
-                //Directly call ProjectileShooting since the boolean stay at false when this is a zone weapon
+                //Directly call ProjectileShooting since the boolean (_primaryShot) stay at false when this is a zone weapon
                 StartCoroutine(ProjectileWeaponShooting(_characterData.PrimaryWeapon));
             }
         }
@@ -85,7 +85,7 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
         {
             if (CanShot(_characterData.SecondaryWeapon))
             {
-                //Directly call ProjectileShooting since the boolean stay at false when this is a zone weapon
+                //Directly call ProjectileShooting since the boolean (_secondaryShot) stay at false when this is a zone weapon
                 StartCoroutine(ProjectileWeaponShooting(_characterData.SecondaryWeapon));
             }
         }

@@ -59,6 +59,7 @@ public abstract class BasicEnemy_BT : BehaviourTree.BehaviourTree
             Die();
         }
 
+        //Give to unit player as target since he damage it
         if(_root.GetData("Target") == null)
         {
             _root.SetData("Target", PlayerHealthManager.Instance.transform);

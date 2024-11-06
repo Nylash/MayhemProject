@@ -1,7 +1,6 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
 using static Utilities;
 
 /// <summary>
@@ -54,11 +53,6 @@ public class Data_Weapon : ScriptableObject
     [SerializeField] private AnimationCurve _explosionSpeed;
     #endregion
 
-    #region MELEE INFO
-    [Header("Melee informations")]
-    [SerializeField] private GameObject _attackArea;
-    #endregion
-
     #region RUNTIME VARIABLES
     [Header("Variables")]
     //Be sure to initiliaze those values in InitializeWeapon to avoid wrong starting values
@@ -81,7 +75,6 @@ public class Data_Weapon : ScriptableObject
     public int MagazineSize { get => _magazineSize; }
     public float InaccuracyAngle { get => _inaccuracyAngle; }
     public float ZoneRadius { get => _zoneRadius; }
-    public GameObject AttackArea { get => _attackArea; }
     public int CurrentAmmunition { get => _currentAmmunition; 
         set 
         {

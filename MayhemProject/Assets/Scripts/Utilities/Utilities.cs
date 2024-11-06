@@ -34,7 +34,7 @@ public class Utilities : MonoBehaviour
     
     public enum WeaponType
     {
-        PROJECTILE, ZONE, MELEE
+        PROJECTILE, ZONE
     }
 
     public enum ZonePattern
