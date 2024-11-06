@@ -26,7 +26,7 @@ MonoBehaviour:
   _objectsByShot: 1
   _timeBetweenObjectsOfOneShot: 0
   _reloadDuration: 2
-  _magazineSize: 2
+  _magazineSize: 12
   _inaccuracyAngle: 5
   _recoil: 0
   _zoneRadius: 0
