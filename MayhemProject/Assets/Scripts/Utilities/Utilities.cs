@@ -34,10 +34,10 @@ public class Utilities : MonoBehaviour
     
     public enum WeaponType
     {
-        PROJECTILE, ZONE
+        PROJECTILE, THROWABLE
     }
 
-    public enum ZonePattern
+    public enum ThrowablePattern
     {
         LINE, ARC
     }

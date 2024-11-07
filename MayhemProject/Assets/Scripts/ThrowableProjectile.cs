@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ProjectileZoneBehaviour : MonoBehaviour
+public class ThrowableProjectile : MonoBehaviour
 {
     private Data_Weapon _associatedWeapon;
     private Vector3 _target;

@@ -9,7 +9,7 @@ public class PlayerAimManager : Singleton<PlayerAimManager>
     #region COMPONENTS
     [Header("COMPONENTS")]
     [SerializeField] private Animator _orientationAnimator;
-    [SerializeField] private Transform _zoneAimGuideTransform;
+    [SerializeField] private Transform _throwableGuideTransform;
     private ControlsMap _controlsMap;
     private PlayerInput _playerInput;
     #endregion
@@ -19,11 +19,11 @@ public class PlayerAimManager : Singleton<PlayerAimManager>
     private Vector2 _mouseDirection;
     private Vector2 _aimDirection;
     private Vector2 _lastStickDirection;
-    private bool _isZoneAiming;
-    private List<Vector3> _zoneAimTargets = new List<Vector3>();
-    private List<Transform> _additionalsZoneAimGuideTransforms = new List<Transform>();
-    private Vector3 _zoneAimParentInitialPos;
-    private float _zoneAimingRange;
+    private bool _isThrowableAiming;
+    private List<Vector3> _throwableTargets = new List<Vector3>();
+    private List<Transform> _additionalsThrowableGuideTransforms = new List<Transform>();
+    private Vector3 _ThrowableGuideParentInitialPos;
+    private float _throwableRange;
     #region ACCESSORS
     public Vector2 AimDirection
     {
@@ -50,16 +50,16 @@ public class PlayerAimManager : Singleton<PlayerAimManager>
             }
         }
     }
-    public List<Vector3> ZoneAimTargets { get => _zoneAimTargets; }
-    public bool IsZoneAiming { get => _isZoneAiming; }
+    public List<Vector3> ThrowableTargets { get => _throwableTargets; }
+    public bool IsThrowableAiming { get => _isThrowableAiming; }
     #endregion
     #endregion
 
     #region CONFIGURATION
     [Header("CONFIGURATION")]
     [SerializeField] private Data_Character _characterData;
-    [SerializeField] private GameObject _zoneAimGuideObject;
-    [SerializeField] private float _zoneAimGuideSpeed = 0.3f;
+    [SerializeField] private GameObject _throwableGuideObject;
+    [SerializeField] private float _throwableGuideSpeed = 0.1f;
     #endregion
 
     private void OnEnable()
@@ -84,7 +84,7 @@ public class PlayerAimManager : Singleton<PlayerAimManager>
 
         _playerInput = GetComponent<PlayerInput>();
 
-        _zoneAimParentInitialPos = _zoneAimGuideTransform.parent.localPosition;
+        _ThrowableGuideParentInitialPos = _throwableGuideTransform.parent.localPosition;
     }
 
     private void Update()
@@ -92,13 +92,13 @@ public class PlayerAimManager : Singleton<PlayerAimManager>
         if (PlayerMovementManager.Instance.CurrentBehavior != PlayerBehaviorState.DODGE)
         {
             CalculateAimDirection();
-            if (!_isZoneAiming)
+            if (!_isThrowableAiming)
             {
                 Aiming();
             }
             else
             {
-                ZoneAiming();
+                ThrowableAiming();
             }
         }
         //Player is dodging, we directly set the float to MovementDirection without smoothing it
@@ -131,9 +131,9 @@ public class PlayerAimManager : Singleton<PlayerAimManager>
         }
     }
 
-    private void ZoneAiming()
+    private void ThrowableAiming()
     {
-        //Using keyboard & mouse so we move zone aim guide to cursor position (if the raycast it nothing we aim to the player position)
+        //Using keyboard & mouse so we move throwable guide to cursor position (if the raycast it nothing we aim to the player position)
         if (_playerInput.currentControlScheme == "Keyboard")
         {
             Ray ray = Camera.main.ScreenPointToRay(_mouseDirection);
@@ -146,29 +146,29 @@ public class PlayerAimManager : Singleton<PlayerAimManager>
             }
 
             // Get the new position for the object
-            Vector3 movement = new Vector3(target.x, _zoneAimGuideTransform.parent.position.y, target.z);
+            Vector3 movement = new Vector3(target.x, _throwableGuideTransform.parent.position.y, target.z);
 
             // Calculate the distance of the new position from the center point. Keep the direction
             // the same but clamp the length to the specified radius
             Vector3 offset = movement - transform.position;
-            _zoneAimGuideTransform.parent.position = transform.position + Vector3.ClampMagnitude(offset, _zoneAimingRange);
+            _throwableGuideTransform.parent.position = transform.position + Vector3.ClampMagnitude(offset, _throwableRange);
         }
         else
         {
-            //Using gamepad we move zone aim guide along aimDirection
-            _zoneAimGuideTransform.parent.position += (new Vector3(_aimDirection.x, 0, _aimDirection.y) * _zoneAimGuideSpeed);
+            //Using gamepad we move throwable guide along aimDirection
+            _throwableGuideTransform.parent.position += (new Vector3(_aimDirection.x, 0, _aimDirection.y) * _throwableGuideSpeed);
 
             // Get the new position for the object
-            Vector3 movement = _zoneAimGuideTransform.parent.position + (new Vector3(_aimDirection.x, 0, _aimDirection.y) * _zoneAimGuideSpeed);
+            Vector3 movement = _throwableGuideTransform.parent.position + (new Vector3(_aimDirection.x, 0, _aimDirection.y) * _throwableGuideSpeed);
 
             // Calculate the distance of the new position from the center point. Keep the direction
             // the same but clamp the length to the specified radius
             Vector3 offset = movement - transform.position;
-            _zoneAimGuideTransform.parent.position = transform.position + Vector3.ClampMagnitude(offset, _zoneAimingRange);
+            _throwableGuideTransform.parent.position = transform.position + Vector3.ClampMagnitude(offset, _throwableRange);
         }
 
-        //Look to zone aim guide
-        Vector3 dir = _zoneAimGuideTransform.parent.position - transform.position;
+        //Look to throwable guide
+        Vector3 dir = _throwableGuideTransform.parent.position - transform.position;
         _orientationAnimator.SetFloat("InputX", dir.x);
         _orientationAnimator.SetFloat("InputY", dir.z);
     }
@@ -210,102 +210,102 @@ public class PlayerAimManager : Singleton<PlayerAimManager>
         }
     }
 
-    public void StartZoneAiming(float zoneRadius, int numberOfZones, float offsetAdditionalsZones, ZonePattern pattern, float range)
+    public void StartThrowableAiming(float throwableRadius, int numberOfThrowables, float offsetAdditionalsThrowables, ThrowablePattern pattern, float range)
     {
-        _zoneAimingRange = range;
+        _throwableRange = range;
 
-        //Activate zone aim guide and initializing it
-        _zoneAimGuideTransform.localScale = Vector3.one * zoneRadius;
-        _zoneAimGuideTransform.parent.localPosition = _zoneAimParentInitialPos;
-        _zoneAimGuideTransform.parent.rotation = Quaternion.identity;
-        _zoneAimGuideTransform.localPosition = Vector3.zero;
+        //Activate throwable guide and initializing it
+        _throwableGuideTransform.localScale = Vector3.one * throwableRadius;
+        _throwableGuideTransform.parent.localPosition = _ThrowableGuideParentInitialPos;
+        _throwableGuideTransform.parent.rotation = Quaternion.identity;
+        _throwableGuideTransform.localPosition = Vector3.zero;
 
-        //Cloning additionals zones if we spawn more than one object
-        for (int i = 1; i < numberOfZones; i++)
+        //Cloning additionals throwable guide if we spawn more than one object
+        for (int i = 1; i < numberOfThrowables; i++)
         {
-            _additionalsZoneAimGuideTransforms.Add(Instantiate(_zoneAimGuideObject, _zoneAimGuideTransform.position, _zoneAimGuideTransform.rotation).transform);
-            _additionalsZoneAimGuideTransforms[i - 1].parent = _zoneAimGuideTransform.parent;
-            _additionalsZoneAimGuideTransforms[i - 1].localScale = Vector3.one * zoneRadius;
+            _additionalsThrowableGuideTransforms.Add(Instantiate(_throwableGuideObject, _throwableGuideTransform.position, _throwableGuideTransform.rotation).transform);
+            _additionalsThrowableGuideTransforms[i - 1].parent = _throwableGuideTransform.parent;
+            _additionalsThrowableGuideTransforms[i - 1].localScale = Vector3.one * throwableRadius;
         }
-        //Place the zone according to the pattern
-        ApplyOffsetPattern(offsetAdditionalsZones, pattern);
+        //Place the guide according to the pattern
+        ApplyOffsetPattern(offsetAdditionalsThrowables, pattern);
 
         //Activate everything
-        _isZoneAiming = true;
-        _zoneAimGuideTransform.gameObject.SetActive(true);
-        foreach (Transform item in _additionalsZoneAimGuideTransforms)
+        _isThrowableAiming = true;
+        _throwableGuideTransform.gameObject.SetActive(true);
+        foreach (Transform item in _additionalsThrowableGuideTransforms)
         {
             item.gameObject.SetActive(true);
         }
 
         //Clean previous targets
-        _zoneAimTargets.Clear();
+        _throwableTargets.Clear();
     }
 
-    public void StopZoneAiming()
+    public void StopThrowableAiming()
     {
-        //Deactivate zone aim guide and register last position
-        _isZoneAiming = false;
-        _zoneAimTargets.Add(_zoneAimGuideTransform.position);
-        _zoneAimGuideTransform.gameObject.SetActive(false);
+        //Deactivate throwable guide and register last position
+        _isThrowableAiming = false;
+        _throwableTargets.Add(_throwableGuideTransform.position);
+        _throwableGuideTransform.gameObject.SetActive(false);
 
-        //Do the same for additionals zones
-        foreach (Transform item in _additionalsZoneAimGuideTransforms)
+        //Do the same for additionals guides
+        foreach (Transform item in _additionalsThrowableGuideTransforms)
         {
-            _zoneAimTargets.Add(item.position);
+            _throwableTargets.Add(item.position);
             Destroy(item.gameObject);
         }
-        _additionalsZoneAimGuideTransforms.Clear();
+        _additionalsThrowableGuideTransforms.Clear();
 
         //Reset all positions
-        _zoneAimGuideTransform.parent.localPosition = _zoneAimParentInitialPos;
-        _zoneAimGuideTransform.parent.rotation = Quaternion.identity;
-        _zoneAimGuideTransform.localPosition = Vector3.zero;
+        _throwableGuideTransform.parent.localPosition = _ThrowableGuideParentInitialPos;
+        _throwableGuideTransform.parent.rotation = Quaternion.identity;
+        _throwableGuideTransform.localPosition = Vector3.zero;
     }
 
-    //Calculate additionals zones positions
-    private void ApplyOffsetPattern(float offset, ZonePattern pattern)
+    //Calculate additionals throwable guides positions
+    private void ApplyOffsetPattern(float offset, ThrowablePattern pattern)
     {
-        bool isOdd = IsIntOdd(_additionalsZoneAimGuideTransforms.Count + 1);
+        bool isOdd = IsIntOdd(_additionalsThrowableGuideTransforms.Count + 1);
 
-        //Apply pattern depending on total number of zones
+        //Apply pattern depending on total number of guides
         if (isOdd)
         {
-            //Only move additionals zones
+            //Only move additionals guides
             switch (pattern) 
             {
-                case ZonePattern.LINE:
-                    for (int i = 0; i < _additionalsZoneAimGuideTransforms.Count; i++)
+                case ThrowablePattern.LINE:
+                    for (int i = 0; i < _additionalsThrowableGuideTransforms.Count; i++)
                     {
                         //(i / 2 + 1) calculate slot (1, 1, 2, 2...)
                         //((i % 2 == 0) ? 1 : -1) calculate the sign so we have (1, -1, 2, -2...)
                         //then we apply the offset to have the right position
                         float pos = (i / 2 + 1) * ((i % 2 == 0) ? 1 : -1) * offset;
 
-                        _additionalsZoneAimGuideTransforms[i].position += new Vector3(pos, 0, 0);
+                        _additionalsThrowableGuideTransforms[i].position += new Vector3(pos, 0, 0);
                     }
                     break;
-                case ZonePattern.ARC:
-                    for (int i = 0; i < _additionalsZoneAimGuideTransforms.Count; i++)
+                case ThrowablePattern.ARC:
+                    for (int i = 0; i < _additionalsThrowableGuideTransforms.Count; i++)
                     {
                         //(i / 2 + 1) calculate slot (1, 1, 2, 2...)
                         //((i % 2 == 0) ? 1 : -1) calculate the sign so we have (1, -1, 2, -2...)
                         //then we apply the offset to have the right position
                         float pos = (i / 2 + 1) * ((i % 2 == 0) ? 1 : -1) * offset;
 
-                        _additionalsZoneAimGuideTransforms[i].position += new Vector3(pos, 0, Mathf.Abs(pos)/2);
+                        _additionalsThrowableGuideTransforms[i].position += new Vector3(pos, 0, Mathf.Abs(pos)/2);
                     }
                     break;
             }
         }
         else
         {
-            //Move basic zone and additionals
+            //Move basic guide and additionals
             switch (pattern)
             {
-                case ZonePattern.LINE:
-                    _zoneAimGuideTransform.position += new Vector3(-offset / 2, 0, 0);
-                    for (int i = 0; i < _additionalsZoneAimGuideTransforms.Count; i++)
+                case ThrowablePattern.LINE:
+                    _throwableGuideTransform.position += new Vector3(-offset / 2, 0, 0);
+                    for (int i = 0; i < _additionalsThrowableGuideTransforms.Count; i++)
                     {
                         //(i / 2 + 1) calculate slot (1, 1, 2, 2...)
                         //((i % 2 == 0) ? 1 : -1) calculate the sign so we have (1, -1, 2, -2...)
@@ -313,15 +313,15 @@ public class PlayerAimManager : Singleton<PlayerAimManager>
                         float pos = (i / 2 + 1) * ((i % 2 == 0) ? 1 : -1) * offset;
 
                         //Calculate new position from basic zone position
-                        Vector3 newPosition = _zoneAimGuideTransform.position + new Vector3(pos, 0, 0);
+                        Vector3 newPosition = _throwableGuideTransform.position + new Vector3(pos, 0, 0);
 
                         //Apply new position
-                        _additionalsZoneAimGuideTransforms[i].position = newPosition;
+                        _additionalsThrowableGuideTransforms[i].position = newPosition;
                     }
                     break;
-                case ZonePattern.ARC:
-                    _zoneAimGuideTransform.position += new Vector3(-offset / 2, 0, 0);
-                    for (int i = 0; i < _additionalsZoneAimGuideTransforms.Count; i++)
+                case ThrowablePattern.ARC:
+                    _throwableGuideTransform.position += new Vector3(-offset / 2, 0, 0);
+                    for (int i = 0; i < _additionalsThrowableGuideTransforms.Count; i++)
                     {
                         //(i / 2 + 1) calculate slot (1, 1, 2, 2...)
                         //((i % 2 == 0) ? 1 : -1) calculate the sign so we have (1, -1, 2, -2...)
@@ -332,10 +332,10 @@ public class PlayerAimManager : Singleton<PlayerAimManager>
                         float posZ = (i + 3) / 2 * (offset / 2) - 1;
 
                         //Calculate new position from basic zone position
-                        Vector3 newPosition = _zoneAimGuideTransform.position + new Vector3(posX, 0, posZ);
+                        Vector3 newPosition = _throwableGuideTransform.position + new Vector3(posX, 0, posZ);
 
                         //Apply new position
-                        _additionalsZoneAimGuideTransforms[i].position = newPosition;
+                        _additionalsThrowableGuideTransforms[i].position = newPosition;
                     }
                     break;
             }

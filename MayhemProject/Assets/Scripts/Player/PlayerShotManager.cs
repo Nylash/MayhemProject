@@ -58,16 +58,16 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
 
         _currentWeaponUsed = _characterData.PrimaryWeapon;
 
-        //Subscribe to the event if the weapon is of type ZONE, so when we release the input (we stop aiming) the shoot function is called
-        if(_characterData.PrimaryWeapon.WeaponType == WeaponType.ZONE)
+        //Subscribe to the event if the weapon is of type THROWABLE, so when we release the input (we stop aiming) the shoot function is called
+        if (_characterData.PrimaryWeapon.WeaponType == WeaponType.THROWABLE)
         {
             event_primaryShotInputEnded.AddListener(() 
-                => StartCoroutine(ZoneWeaponShooting(_characterData.PrimaryWeapon)));
+                => StartCoroutine(ThrowableWeaponShooting(_characterData.PrimaryWeapon)));
         }
-        if(_characterData.SecondaryWeapon.WeaponType == WeaponType.ZONE)
+        if(_characterData.SecondaryWeapon.WeaponType == WeaponType.THROWABLE)
         {
             event_secondaryShotInputEnded.AddListener(() 
-                => StartCoroutine(ZoneWeaponShooting(_characterData.SecondaryWeapon)));
+                => StartCoroutine(ThrowableWeaponShooting(_characterData.SecondaryWeapon)));
         }
     }
 
@@ -77,7 +77,7 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
         {
             if (CanShot(_characterData.PrimaryWeapon))
             {
-                //Directly call ProjectileShooting since the boolean (_primaryShot) stay at false when this is a zone weapon
+                //Directly call ProjectileShooting since the boolean (_primaryShot) stay at false when this is a throwable weapon
                 StartCoroutine(ProjectileWeaponShooting(_characterData.PrimaryWeapon));
             }
         }
@@ -85,7 +85,7 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
         {
             if (CanShot(_characterData.SecondaryWeapon))
             {
-                //Directly call ProjectileShooting since the boolean (_secondaryShot) stay at false when this is a zone weapon
+                //Directly call ProjectileShooting since the boolean (_secondaryShot) stay at false when this is a throwable weapon
                 StartCoroutine(ProjectileWeaponShooting(_characterData.SecondaryWeapon));
             }
         }
@@ -126,7 +126,7 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
         StartCoroutine(FireRateCoroutine(weapon));
     }
 
-    private IEnumerator ZoneWeaponShooting(Data_Weapon weapon)
+    private IEnumerator ThrowableWeaponShooting(Data_Weapon weapon)
     {
         if(CanShot(weapon))
         {
@@ -136,10 +136,10 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
             {
                 //Spawn projectile and configure it
                 GameObject _currentProjectileZone = Instantiate(weapon.Object, transform.position, Quaternion.identity);
-                ProjectileZoneBehaviour _currentProjetileZoneBehaviourRef = _currentProjectileZone.GetComponent<ProjectileZoneBehaviour>();
+                ThrowableProjectile _currentProjetileZoneBehaviourRef = _currentProjectileZone.GetComponent<ThrowableProjectile>();
 
                 _currentProjetileZoneBehaviourRef.Speed = weapon.TravelSpeed;
-                _currentProjetileZoneBehaviourRef.Target = PlayerAimManager.Instance.ZoneAimTargets[i];
+                _currentProjetileZoneBehaviourRef.Target = PlayerAimManager.Instance.ThrowableTargets[i];
                 _currentProjetileZoneBehaviourRef.Trajectory = weapon.Trajectory;
                 _currentProjetileZoneBehaviourRef.AssociatedWeapon = weapon;
                 _currentProjectileZone.layer = _attackLayer;
@@ -167,26 +167,26 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
             _secondaryShot = false;
         }
 
-        if (PlayerAimManager.Instance.IsZoneAiming)
+        if (PlayerAimManager.Instance.IsThrowableAiming)
         {
-            //Stop zone aiming with secondary weapon if needed
-            if (_characterData.SecondaryWeapon.WeaponType == WeaponType.ZONE)
+            //Stop throwable aiming with secondary weapon if needed
+            if (_characterData.SecondaryWeapon.WeaponType == WeaponType.THROWABLE)
             {
-                PlayerAimManager.Instance.StopZoneAiming();
+                PlayerAimManager.Instance.StopThrowableAiming();
             }
         }
 
-        //Start zone aiming with primary weapon if needed
-        if(_characterData.PrimaryWeapon.WeaponType == WeaponType.ZONE)
+        //Start throwable aiming with primary weapon if needed
+        if (_characterData.PrimaryWeapon.WeaponType == WeaponType.THROWABLE)
         {
-            PlayerAimManager.Instance.StartZoneAiming(
+            PlayerAimManager.Instance.StartThrowableAiming(
                 _characterData.PrimaryWeapon.ZoneRadius, _characterData.PrimaryWeapon.ObjectsByShot,
                 _characterData.PrimaryWeapon.DistanceBetweenZones, _characterData.PrimaryWeapon.Pattern,
                 _characterData.PrimaryWeapon.Range);
         }
         else
         {
-            //Pass bool at true for Update if this is not a zone weapon
+            //Pass bool at true for Update if this is not a throwable weapon
             _primaryShot = true;
         }
 
@@ -202,26 +202,26 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
             _primaryShot = false;
         }
 
-        if (PlayerAimManager.Instance.IsZoneAiming)
+        if (PlayerAimManager.Instance.IsThrowableAiming)
         {
-            //Stop zone aiming with primary weapon if needed
-            if (_characterData.PrimaryWeapon.WeaponType == WeaponType.ZONE)
+            //Stop throwable aiming with primary weapon if needed
+            if (_characterData.PrimaryWeapon.WeaponType == WeaponType.THROWABLE)
             {
-                PlayerAimManager.Instance.StopZoneAiming();
+                PlayerAimManager.Instance.StopThrowableAiming();
             }
         }
 
-        //Start zone aiming with secondary weapon if needed
-        if (_characterData.SecondaryWeapon.WeaponType == WeaponType.ZONE)
+        //Start throwable aiming with secondary weapon if needed
+        if (_characterData.SecondaryWeapon.WeaponType == WeaponType.THROWABLE)
         {
-            PlayerAimManager.Instance.StartZoneAiming(
+            PlayerAimManager.Instance.StartThrowableAiming(
                 _characterData.SecondaryWeapon.ZoneRadius, _characterData.SecondaryWeapon.ObjectsByShot,
                 _characterData.SecondaryWeapon.DistanceBetweenZones, _characterData.SecondaryWeapon.Pattern,
                 _characterData.SecondaryWeapon.Range);
         }
         else
         {
-            //Pass bool at true for Update if this is not a zone weapon
+            //Pass bool at true for Update if this is not a throwable weapon
             _secondaryShot = true;
         }
 
@@ -233,13 +233,13 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
     {
         _primaryShot = false;
 
-        //Stop zone aiming if needed
-        if (_characterData.PrimaryWeapon.WeaponType == WeaponType.ZONE)
+        //Stop throwable aiming if needed
+        if (_characterData.PrimaryWeapon.WeaponType == WeaponType.THROWABLE)
         {
-            PlayerAimManager.Instance.StopZoneAiming();
+            PlayerAimManager.Instance.StopThrowableAiming();
         }
 
-        //Invoke event stop shooting, so if weapon is a zone weapon it can shoot
+        //Invoke event stop shooting, so if weapon is a throwable weapon it can shoot
         event_primaryShotInputEnded.Invoke();
 
         //If other input is pressed we directly use it
@@ -253,13 +253,13 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
     {
         _secondaryShot = false;
 
-        //Stop zone aiming if needed
-        if (_characterData.SecondaryWeapon.WeaponType == WeaponType.ZONE)
+        //Stop throwable aiming if needed
+        if (_characterData.SecondaryWeapon.WeaponType == WeaponType.THROWABLE)
         {
-            PlayerAimManager.Instance.StopZoneAiming();
+            PlayerAimManager.Instance.StopThrowableAiming();
         }
 
-        //Invoke event stop shooting, so if weapon is a zone weapon it can shoot
+        //Invoke event stop shooting, so if weapon is a throwable weapon it can shoot
         event_secondaryShotInputEnded.Invoke();
 
         //If other input is pressed we directly use it

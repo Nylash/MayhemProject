@@ -47,7 +47,7 @@ public class Data_Weapon : ScriptableObject
     #region ZONE INFO
     [Header("Zone informations")]
     [SerializeField] private float _zoneRadius;
-    [SerializeField] private ZonePattern _pattern;
+    [SerializeField] private ThrowablePattern _pattern;
     [SerializeField] private float _distanceBetweenZones;
     [SerializeField] private AnimationCurve _trajectory;
     [SerializeField] private AnimationCurve _explosionSpeed;
@@ -92,7 +92,7 @@ public class Data_Weapon : ScriptableObject
     public AnimationCurve Trajectory { get => _trajectory; }
     public AnimationCurve ExplosionSpeed { get => _explosionSpeed; }
     public float DistanceBetweenZones { get => _distanceBetweenZones; }
-    public ZonePattern Pattern { get => _pattern; }
+    public ThrowablePattern Pattern { get => _pattern; }
     public Sprite WeaponImage { get => _weaponImage; }
     public float WeaponImageSize { get => _weaponImageSize; }
     public float Recoil { get => _recoil; }

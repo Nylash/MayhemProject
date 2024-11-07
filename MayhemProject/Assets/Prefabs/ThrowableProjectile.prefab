@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 256821815630857821}
   - component: {fileID: -5095819855877821068}
   m_Layer: 0
-  m_Name: ProjectileZone
+  m_Name: ThrowableProjectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -143,6 +143,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 1511395521060662260}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 908fba09b30342a4e903664796505828, type: 3}
+  m_Script: {fileID: 11500000, guid: 58159cfab4b0fd64b98c932dec219e6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

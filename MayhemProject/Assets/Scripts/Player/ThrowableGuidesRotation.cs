@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ZoneGuidesRotation : MonoBehaviour
+public class ThrowableGuidesRotation : MonoBehaviour
 {
     [SerializeField] private Transform _player;
 
