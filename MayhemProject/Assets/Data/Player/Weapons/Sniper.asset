@@ -25,6 +25,7 @@ MonoBehaviour:
   _range: 50
   _object: {fileID: 1511395521060662260, guid: f5a11531b6de89140a239a1a1001c99a, type: 3}
   _recoil: 10
+  _penetration: 5
   _inaccuracyAngle: 1
   _magazineSize: 10
   _splashRange: 0

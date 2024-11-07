@@ -32,6 +32,7 @@ public class Data_Weapon : ScriptableObject
     #region PROJECTILE INFO
     [Header("Projectile informations")]
     [SerializeField] private float _recoil;
+    [SerializeField] private int _penetration;
     [SerializeField] private float _inaccuracyAngle;
     [SerializeField] private int _magazineSize;
     [SerializeField] private float _splashRange;
@@ -91,6 +92,7 @@ public class Data_Weapon : ScriptableObject
     public float Recoil { get => _recoil; }
     public bool IsBetweenShots { get => _isBetweenShots; set => _isBetweenShots = value; }
     public float SplashRange { get => _splashRange; set => _splashRange = value; }
+    public int Penetration { get => _penetration; set => _penetration = value; }
     #endregion
 
     #region EVENTS

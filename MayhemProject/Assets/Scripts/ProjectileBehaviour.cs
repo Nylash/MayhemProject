@@ -11,6 +11,7 @@ public class ProjectileBehaviour : MonoBehaviour
     private GameObject _explosion;
     private bool _exploded;
     private Vector3 _animationTargetScale;
+    private int _remainingPenetration;
 
     public Vector3 Direction { get => _direction; set => _direction = value; }
     public Data_Weapon AssociatedWeapon { get => _associatedWeapon; set => _associatedWeapon = value; }
@@ -20,6 +21,7 @@ public class ProjectileBehaviour : MonoBehaviour
         _birthPlace = transform.position;
         _rb = GetComponent<Rigidbody>();
         _rb.velocity = _direction * _associatedWeapon.TravelSpeed;
+        _remainingPenetration = _associatedWeapon.Penetration;
     }
 
     private void Update()
@@ -59,12 +61,14 @@ public class ProjectileBehaviour : MonoBehaviour
             if (other.CompareTag("Enemy"))
             {
                 other.gameObject.GetComponentInParent<BasicEnemy_BT>().TakeDamage(_associatedWeapon.Damage);
-                Destroy(gameObject);
+                if (Penetration())
+                    return;
             }
             if (other.CompareTag("Player"))
             {
                 PlayerHealthManager.Instance.TakeDamage(_associatedWeapon.Damage);
-                Destroy(gameObject);
+                if (Penetration())
+                    return;
             }
             //If none of the two tests succeed, it then that we hit Environnement
             Destroy(gameObject);
@@ -89,5 +93,23 @@ public class ProjectileBehaviour : MonoBehaviour
         GetComponent<MeshRenderer>().enabled = false;
         GetComponent<Collider>().enabled = false;
         _rb.velocity = Vector3.zero;
+    }
+
+    private bool Penetration()
+    {
+        if (_remainingPenetration > 0)
+        {
+            _remainingPenetration--;
+            if (_remainingPenetration == 0)
+            {
+                Destroy(gameObject);
+            }
+            return true;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+        return false;
     }
 }
