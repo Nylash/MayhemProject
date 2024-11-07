@@ -4,8 +4,6 @@ public class ThrowableProjectile : MonoBehaviour
 {
     private Data_Weapon _associatedWeapon;
     private Vector3 _target;
-    private float _speed;
-    private AnimationCurve _trajectory;
     private float _remainingDistanceRatio;
     private float _distanceToTarget;
     private GameObject _explosion;
@@ -15,8 +13,6 @@ public class ThrowableProjectile : MonoBehaviour
     private Vector3 _animationTargetScale;
 
     public Vector3 Target { get => _target; set => _target = value; }
-    public float Speed { get => _speed; set => _speed = value; }
-    public AnimationCurve Trajectory { get => _trajectory; set => _trajectory = value; }
     public Data_Weapon AssociatedWeapon { get => _associatedWeapon; set => _associatedWeapon = value; }
 
     private void Start()
@@ -35,11 +31,17 @@ public class ThrowableProjectile : MonoBehaviour
             //if NaN we aim right under the player
             if (float.IsNaN(_remainingDistanceRatio))
             {
-                transform.position = Vector3.MoveTowards(transform.position, new Vector3(_target.x, 0, _target.z), _speed);
+                transform.position = Vector3.MoveTowards(
+                    transform.position, 
+                    new Vector3(_target.x, 0, _target.z), 
+                    _associatedWeapon.TravelSpeed);
             }
             else
             {
-                transform.position = Vector3.MoveTowards(transform.position, new Vector3(_target.x, _trajectory.Evaluate(1 - _remainingDistanceRatio), _target.z), _speed);
+                transform.position = Vector3.MoveTowards(
+                    transform.position, 
+                    new Vector3(_target.x, _associatedWeapon.Trajectory.Evaluate(1 - _remainingDistanceRatio), _target.z),
+                    _associatedWeapon.TravelSpeed);
             }
         }
         //Explosion animation
@@ -68,8 +70,8 @@ public class ThrowableProjectile : MonoBehaviour
         _explosion.layer = gameObject.layer;
         _explosion.GetComponent<ExplosionBehaviour>().AssociatedWeapon = _associatedWeapon;
         //Calculate animation values
-        //2.5f is the ratio to match the zoneAimGuide size 
-        _animationTargetScale = Vector3.one * _associatedWeapon.ZoneRadius * 2.5f;
+        //2.5f is the ratio to match the guide object size 
+        _animationTargetScale = Vector3.one * _associatedWeapon.ThrowableRadius * 2.5f;
         _animationTotalDistance = Vector3.Distance(_explosion.transform.localScale, _animationTargetScale);
 
         _targetReached = true;

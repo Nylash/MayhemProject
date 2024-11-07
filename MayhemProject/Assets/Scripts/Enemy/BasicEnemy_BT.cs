@@ -69,7 +69,7 @@ public abstract class BasicEnemy_BT : BehaviourTree.BehaviourTree
     {
         WeaponStatus currentWeaponStatus = GetWeaponStatus(weapon);
         //Each loop create one object
-        for (int i = 0; i < weapon.ObjectsByShot; i++)
+        for (int i = 0; i < weapon.ObjectsByBurst; i++)
         {
             currentWeaponStatus.CurrentAmmunition--;
 
@@ -80,16 +80,14 @@ public abstract class BasicEnemy_BT : BehaviourTree.BehaviourTree
 
             Vector3 shootDirection = Quaternion.AngleAxis(randomAngle, Vector3.up) * transform.forward;
             _currentProjectileBehaviourRef.Direction = shootDirection.normalized;
-            _currentProjectileBehaviourRef.Speed = weapon.TravelSpeed;
-            _currentProjectileBehaviourRef.Range = weapon.Range;
             _currentProjectileBehaviourRef.AssociatedWeapon = weapon;
             _currentProjectile.layer = _attackLayer;
 
             _currentProjectile.SetActive(true);
 
             //Little security to avoid waiting if there is only one object to spawn
-            if (weapon.ObjectsByShot > 1)
-                yield return new WaitForSeconds(weapon.TimeBetweenObjectsOfOneShot);
+            if (weapon.ObjectsByBurst > 1)
+                yield return new WaitForSeconds(weapon.BurstInternalIntervall);
         }
         currentWeaponStatus.IsBetweenShots = true;
         _weaponsStatus[weapon] = currentWeaponStatus;
@@ -142,7 +140,7 @@ public abstract class BasicEnemy_BT : BehaviourTree.BehaviourTree
         }
 
         //Check remaining ammunition
-        if (GetWeaponStatus(weapon).CurrentAmmunition - weapon.ObjectsByShot < 0)
+        if (GetWeaponStatus(weapon).CurrentAmmunition - weapon.ObjectsByBurst < 0)
         {
             //Directly change weapon status (to avoid several coroutine start)
             WeaponStatus currentWeaponStatus = GetWeaponStatus(weapon);

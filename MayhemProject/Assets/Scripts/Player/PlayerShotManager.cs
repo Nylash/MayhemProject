@@ -96,7 +96,7 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
         Vector3 aimDirection = new Vector3(PlayerAimManager.Instance.AimDirection.x, 0, PlayerAimManager.Instance.AimDirection.y);
 
         //Each loop create one object
-        for (int i = 0; i < weapon.ObjectsByShot; i++)
+        for (int i = 0; i < weapon.ObjectsByBurst; i++)
         {
             //Spawn projectile and configure it
             weapon.CurrentAmmunition--;
@@ -107,16 +107,14 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
             float randomAngle = Random.Range(-weapon.InaccuracyAngle, weapon.InaccuracyAngle);
             Vector3 shootDirection = Quaternion.AngleAxis(randomAngle, Vector3.up) * aimDirection;
             _currentProjectileBehaviourRef.Direction = shootDirection.normalized;
-            _currentProjectileBehaviourRef.Speed = weapon.TravelSpeed;
-            _currentProjectileBehaviourRef.Range = weapon.Range;
             _currentProjectileBehaviourRef.AssociatedWeapon = weapon;
             _currentProjectile.layer = _attackLayer;
 
             _currentProjectile.SetActive(true);
 
             //Little security to avoid waiting if there is only one object to spawn
-            if (weapon.ObjectsByShot > 1)
-                yield return new WaitForSeconds(weapon.TimeBetweenObjectsOfOneShot);
+            if (weapon.ObjectsByBurst > 1)
+                yield return new WaitForSeconds(weapon.BurstInternalIntervall);
         }
         //Recoil
         StartRecoil(-aimDirection, weapon.Recoil);
@@ -132,23 +130,21 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
         {
             weapon.CurrentAmmunition--;
             //Each loop create one object
-            for (int i = 0; i < weapon.ObjectsByShot; i++)
+            for (int i = 0; i < weapon.ObjectsByBurst; i++)
             {
                 //Spawn projectile and configure it
                 GameObject _currentProjectileZone = Instantiate(weapon.Object, transform.position, Quaternion.identity);
                 ThrowableProjectile _currentProjetileZoneBehaviourRef = _currentProjectileZone.GetComponent<ThrowableProjectile>();
 
-                _currentProjetileZoneBehaviourRef.Speed = weapon.TravelSpeed;
                 _currentProjetileZoneBehaviourRef.Target = PlayerAimManager.Instance.ThrowableTargets[i];
-                _currentProjetileZoneBehaviourRef.Trajectory = weapon.Trajectory;
                 _currentProjetileZoneBehaviourRef.AssociatedWeapon = weapon;
                 _currentProjectileZone.layer = _attackLayer;
 
                 _currentProjectileZone.SetActive(true);
 
                 //Little security to avoid waiting if there is only one object to spawn
-                if (weapon.ObjectsByShot > 1)
-                    yield return new WaitForSeconds(weapon.TimeBetweenObjectsOfOneShot);
+                if (weapon.ObjectsByBurst > 1)
+                    yield return new WaitForSeconds(weapon.BurstInternalIntervall);
             }
             //Auto reload
             StartCoroutine(weapon.Reload());
@@ -180,8 +176,8 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
         if (_characterData.PrimaryWeapon.WeaponType == WeaponType.THROWABLE)
         {
             PlayerAimManager.Instance.StartThrowableAiming(
-                _characterData.PrimaryWeapon.ZoneRadius, _characterData.PrimaryWeapon.ObjectsByShot,
-                _characterData.PrimaryWeapon.DistanceBetweenZones, _characterData.PrimaryWeapon.Pattern,
+                _characterData.PrimaryWeapon.ThrowableRadius, _characterData.PrimaryWeapon.ObjectsByBurst,
+                _characterData.PrimaryWeapon.DistanceBetweenThrowables, _characterData.PrimaryWeapon.Pattern,
                 _characterData.PrimaryWeapon.Range);
         }
         else
@@ -215,8 +211,8 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
         if (_characterData.SecondaryWeapon.WeaponType == WeaponType.THROWABLE)
         {
             PlayerAimManager.Instance.StartThrowableAiming(
-                _characterData.SecondaryWeapon.ZoneRadius, _characterData.SecondaryWeapon.ObjectsByShot,
-                _characterData.SecondaryWeapon.DistanceBetweenZones, _characterData.SecondaryWeapon.Pattern,
+                _characterData.SecondaryWeapon.ThrowableRadius, _characterData.SecondaryWeapon.ObjectsByBurst,
+                _characterData.SecondaryWeapon.DistanceBetweenThrowables, _characterData.SecondaryWeapon.Pattern,
                 _characterData.SecondaryWeapon.Range);
         }
         else
@@ -290,7 +286,7 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
         }
 
         //Check remaining ammunition
-        if (weapon.CurrentAmmunition - weapon.ObjectsByShot < 0)
+        if (weapon.CurrentAmmunition - weapon.ObjectsByBurst < 0)
         {
             return false;
         }

@@ -13,5 +13,4 @@ MonoBehaviour:
   m_Name: Tank
   m_EditorClassIdentifier: 
   _name: Tank
-  _maxHP: 100
-  _attack: 5
+  _maxHP: 1000

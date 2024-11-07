@@ -2427,8 +2427,8 @@ MonoBehaviour:
   _checkUnitLayer:
     serializedVersion: 2
     m_Bits: 256
-  copToSpawn: 150
-  tankToSpawn: 0
+  copToSpawn: 0
+  tankToSpawn: 10
   chopperToSpawn: 0
   _spawnZonesParent: {fileID: 1495940296}
 --- !u!4 &1815375335

@@ -19,36 +19,29 @@ public class Data_Weapon : ScriptableObject
 
     #region COMMONS INFO
     [Header("Commons informations")]
-    [SerializeField] private float _damage;
     [SerializeField] private float _fireRate;
-    #endregion
-
-#pragma warning disable CS0414
-    [SerializeField, ReadOnly] private string hint = "Be sure to only fill fields which correspond to weapon type, let the others null (0 for numerical values)";
-#pragma warning restore CS0414
-
-    #region PROJECTILE & ZONE INFO
-    [Header("Projectile & Zone informations")]
-    [SerializeField] GameObject _object;
-    [SerializeField] private float _range;
-    [SerializeField] private float _travelSpeed;
-    [SerializeField] private int _objectsByShot;
-    [SerializeField] private float _timeBetweenObjectsOfOneShot;
+    [SerializeField] private float _damage;
     [SerializeField] private float _reloadDuration;
-    [SerializeField] private int _magazineSize;
+    [SerializeField] private float _travelSpeed;
+    [SerializeField] private int _objectsByBurst;
+    [SerializeField] private float _burstInternalIntervall;
+    [SerializeField] private float _range;
+    [SerializeField] private GameObject _object;
     #endregion
 
     #region PROJECTILE INFO
     [Header("Projectile informations")]
-    [SerializeField] private float _inaccuracyAngle;
     [SerializeField] private float _recoil;
+    [SerializeField] private float _inaccuracyAngle;
+    [SerializeField] private int _magazineSize;
+    [SerializeField] private float _splashRange;
     #endregion
 
-    #region ZONE INFO
-    [Header("Zone informations")]
-    [SerializeField] private float _zoneRadius;
+    #region THROWABLE INFO
+    [Header("Throwable informations")]
+    [SerializeField] private float _throwableRadius;
     [SerializeField] private ThrowablePattern _pattern;
-    [SerializeField] private float _distanceBetweenZones;
+    [SerializeField] private float _distanceBetweenThrowables;
     [SerializeField] private AnimationCurve _trajectory;
     [SerializeField] private AnimationCurve _explosionSpeed;
     #endregion
@@ -69,12 +62,12 @@ public class Data_Weapon : ScriptableObject
     public GameObject Object { get => _object; }
     public float Range { get => _range; }
     public float TravelSpeed { get => _travelSpeed; }
-    public int ObjectsByShot { get => _objectsByShot; }
-    public float TimeBetweenObjectsOfOneShot { get => _timeBetweenObjectsOfOneShot; }
+    public int ObjectsByBurst { get => _objectsByBurst; }
+    public float BurstInternalIntervall { get => _burstInternalIntervall; }
     public float ReloadDuration { get => _reloadDuration; }
     public int MagazineSize { get => _magazineSize; }
     public float InaccuracyAngle { get => _inaccuracyAngle; }
-    public float ZoneRadius { get => _zoneRadius; }
+    public float ThrowableRadius { get => _throwableRadius; }
     public int CurrentAmmunition { get => _currentAmmunition; 
         set 
         {
@@ -91,12 +84,13 @@ public class Data_Weapon : ScriptableObject
     }
     public AnimationCurve Trajectory { get => _trajectory; }
     public AnimationCurve ExplosionSpeed { get => _explosionSpeed; }
-    public float DistanceBetweenZones { get => _distanceBetweenZones; }
+    public float DistanceBetweenThrowables { get => _distanceBetweenThrowables; }
     public ThrowablePattern Pattern { get => _pattern; }
     public Sprite WeaponImage { get => _weaponImage; }
     public float WeaponImageSize { get => _weaponImageSize; }
     public float Recoil { get => _recoil; }
     public bool IsBetweenShots { get => _isBetweenShots; set => _isBetweenShots = value; }
+    public float SplashRange { get => _splashRange; set => _splashRange = value; }
     #endregion
 
     #region EVENTS

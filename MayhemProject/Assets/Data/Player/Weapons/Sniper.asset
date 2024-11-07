@@ -16,22 +16,21 @@ MonoBehaviour:
   _weaponType: 0
   _weaponImage: {fileID: 0}
   _weaponImageSize: 1
-  _damage: 100
   _fireRate: 1
-  hint: Be sure to only fill fields which correspond to weapon type, let the others
-    null (0 for numerical values)
-  _object: {fileID: 1511395521060662260, guid: f5a11531b6de89140a239a1a1001c99a, type: 3}
-  _range: 50
-  _travelSpeed: 20
-  _objectsByShot: 1
-  _timeBetweenObjectsOfOneShot: 0
+  _damage: 100
   _reloadDuration: 3
-  _magazineSize: 10
-  _inaccuracyAngle: 1
+  _travelSpeed: 20
+  _objectsByBurst: 1
+  _burstInternalIntervall: 0
+  _range: 50
+  _object: {fileID: 1511395521060662260, guid: f5a11531b6de89140a239a1a1001c99a, type: 3}
   _recoil: 10
-  _zoneRadius: 0
+  _inaccuracyAngle: 1
+  _magazineSize: 10
+  _splashRange: 0
+  _throwableRadius: 0
   _pattern: 0
-  _distanceBetweenZones: 0
+  _distanceBetweenThrowables: 0
   _trajectory:
     serializedVersion: 2
     m_Curve: []
