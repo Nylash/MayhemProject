@@ -1,12 +1,11 @@
-using TMPro.EditorUtilities;
 using UnityEngine;
 
 public class ProjectileBehaviour : MonoBehaviour
 {
     private Data_Weapon _associatedWeapon;
     private Vector3 _direction;
-    private Rigidbody _rb;
-    private Vector3 _birthPlace;
+    protected Rigidbody _rb;
+    protected Vector3 _birthPlace;
 
     private GameObject _explosion;
     private bool _exploded;
@@ -16,7 +15,7 @@ public class ProjectileBehaviour : MonoBehaviour
     public Vector3 Direction { get => _direction; set => _direction = value; }
     public Data_Weapon AssociatedWeapon { get => _associatedWeapon; set => _associatedWeapon = value; }
 
-    private void Start()
+    protected virtual void Start()
     {
         _birthPlace = transform.position;
         _rb = GetComponent<Rigidbody>();
@@ -24,7 +23,7 @@ public class ProjectileBehaviour : MonoBehaviour
         _remainingPenetration = _associatedWeapon.Penetration;
     }
 
-    private void Update()
+    protected virtual void Update()
     {
         if (Vector3.Distance(_birthPlace, transform.position) > _associatedWeapon.Range)
         {
