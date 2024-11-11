@@ -70,8 +70,7 @@ public class ThrowableProjectile : MonoBehaviour
         _explosion.layer = gameObject.layer;
         _explosion.GetComponent<ExplosionBehaviour>().AssociatedWeapon = _associatedWeapon;
         //Calculate animation values
-        //2.5f is the ratio to match the guide object size 
-        _animationTargetScale = Vector3.one * _associatedWeapon.ThrowableRadius * 2.5f;
+        _animationTargetScale = Vector3.one * _associatedWeapon.ThrowableRadius;
         _animationTotalDistance = Vector3.Distance(_explosion.transform.localScale, _animationTargetScale);
 
         _targetReached = true;

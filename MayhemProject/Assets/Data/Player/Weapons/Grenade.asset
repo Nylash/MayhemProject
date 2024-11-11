@@ -25,9 +25,11 @@ MonoBehaviour:
   _range: 10
   _object: {fileID: 1511395521060662260, guid: e80b6a813937d1e499107a3e10f50f3d, type: 3}
   _recoil: 0
+  _penetration: 0
   _inaccuracyAngle: 0
   _magazineSize: 0
-  _throwableRadius: 1.3
+  _splashRange: 0
+  _throwableRadius: 2.5
   _pattern: 1
   _distanceBetweenThrowables: 0
   _trajectory:
