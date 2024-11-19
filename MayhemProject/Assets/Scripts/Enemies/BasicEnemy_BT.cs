@@ -8,24 +8,26 @@ using System.Collections;
 
 public abstract class BasicEnemy_BT : BehaviourTree.BehaviourTree
 {
-    [Header("BASE")]
     #region COMPONENTS
+    [Header("COMPOSANTS")]
     [SerializeField] private Image _HPBarFill;
     [SerializeField] private GameObject _HPBar;
     [SerializeField, Layer] protected int _attackLayer;
-    [SerializeField] protected List<Data_Weapon> _weapons = new List<Data_Weapon>();
-    protected NavMeshAgent _agent;
-    protected Dictionary<Data_Weapon, WeaponStatus> _weaponsStatus;
+    [SerializeField] private Vector3 _shootingOffset;
     #endregion
 
     #region VARIABLES
     private float _HP;
+    protected NavMeshAgent _agent;
+    protected Dictionary<Data_Weapon, WeaponStatus> _weaponsStatus;
     #region ACCESSORS
     #endregion
     #endregion
 
     #region CONFIGURATION
-    [SerializeField] protected Data_Enemy _enemyData;
+    [Header("CONFIGURATION")]
+    [SerializeField] private float _maxHP;
+    [SerializeField] protected List<Data_Weapon> _weapons = new List<Data_Weapon>();
     #endregion
 
     protected override Node SetupTree()
@@ -45,7 +47,7 @@ public abstract class BasicEnemy_BT : BehaviourTree.BehaviourTree
 
         base.Start();
         
-        _HP = _enemyData.MaxHP;
+        _HP = _maxHP;
         UpdateHPBar();
     }
 
@@ -68,12 +70,17 @@ public abstract class BasicEnemy_BT : BehaviourTree.BehaviourTree
     private IEnumerator Fire(Data_Weapon weapon)
     {
         WeaponStatus currentWeaponStatus = GetWeaponStatus(weapon);
+
+        //Directly put IsBetweenShots to true, to avoid simultaneous shot
+        currentWeaponStatus.IsBetweenShots = true;
+        _weaponsStatus[weapon] = currentWeaponStatus;
+
         //Each loop create one object
         for (int i = 0; i < weapon.ObjectsByBurst; i++)
         {
             currentWeaponStatus.CurrentAmmunition--;
 
-            GameObject _currentProjectile = Instantiate(weapon.Object, transform.position, Quaternion.identity);
+            GameObject _currentProjectile = Instantiate(weapon.Object, transform.position + _shootingOffset, Quaternion.identity);
             ProjectileBehaviour _currentProjectileBehaviourRef = _currentProjectile.GetComponent<ProjectileBehaviour>();
 
             float randomAngle = UnityEngine.Random.Range(-weapon.InaccuracyAngle, weapon.InaccuracyAngle);
@@ -89,8 +96,6 @@ public abstract class BasicEnemy_BT : BehaviourTree.BehaviourTree
             if (weapon.ObjectsByBurst > 1)
                 yield return new WaitForSeconds(weapon.BurstInternalIntervall);
         }
-        currentWeaponStatus.IsBetweenShots = true;
-        _weaponsStatus[weapon] = currentWeaponStatus;
         yield return new WaitForSeconds(weapon.FireRate);
         currentWeaponStatus.IsBetweenShots = false;
         _weaponsStatus[weapon] = currentWeaponStatus;
@@ -105,7 +110,7 @@ public abstract class BasicEnemy_BT : BehaviourTree.BehaviourTree
             Die();
         }
 
-        //Give to unit player as target since he damage it
+        //Give to unit player as target since the player damages it
         if(_root.GetData("Target") == null)
         {
             _root.SetData("Target", PlayerHealthManager.Instance.transform);
@@ -114,7 +119,7 @@ public abstract class BasicEnemy_BT : BehaviourTree.BehaviourTree
 
     private void UpdateHPBar()
     {
-        _HPBarFill.fillAmount = _HP / _enemyData.MaxHP;
+        _HPBarFill.fillAmount = _HP / _maxHP;
         if (_HPBarFill.fillAmount < 1)
             _HPBar.SetActive(true);
     }

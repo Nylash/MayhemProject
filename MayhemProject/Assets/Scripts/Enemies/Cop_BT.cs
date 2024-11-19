@@ -20,7 +20,7 @@ public class Cop_BT : BasicEnemy_BT
             {
                 new CheckTargetInTrigger(_attackTrigger),
                 new TaskStopMovement(_agent),
-                new TaskAttackTarget(this, transform, _weapons[0])
+                new TaskAttackTarget(this, _weapons[0])
             }),
             //Movement sequence
             new Sequence(new List<Node>

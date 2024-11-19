@@ -766,9 +766,9 @@ MonoBehaviour:
   _HPBarFill: {fileID: 2279193084506294218}
   _HPBar: {fileID: 5456045319588752932}
   _attackLayer: 9
+  _maxHP: 1000
   _weapons:
   - {fileID: 11400000, guid: c9d635bd144be19449a956928158b16f, type: 2}
-  _enemyData: {fileID: 11400000, guid: 5b07f7b34f7fd9d45ab6b83419b8bfd1, type: 2}
   _detectionTrigger: {fileID: 4368719164606216499}
   _attackTrigger: {fileID: 3116310401681697602}
   _stopMovementTrigger: {fileID: 428889898825744388}

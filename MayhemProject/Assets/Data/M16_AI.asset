@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0bef204357e7644f881c4eea01c8bcf, type: 3}
+  m_Name: M16_AI
+  m_EditorClassIdentifier: 
+  _weaponName: M16
+  _weaponType: 0
+  _weaponImage: {fileID: 0}
+  _weaponImageSize: 1
+  _fireRate: 0.5
+  _damage: 5
+  _reloadDuration: 3
+  _travelSpeed: 20
+  _objectsByBurst: 3
+  _burstInternalIntervall: 0.01
+  _range: 50
+  _object: {fileID: 1511395521060662260, guid: f5a11531b6de89140a239a1a1001c99a, type: 3}
+  _recoil: 0
+  _penetration: 0
+  _inaccuracyAngle: 5
+  _magazineSize: 30
+  _splashRange: 0
+  _throwableRadius: 0
+  _pattern: 0
+  _distanceBetweenThrowables: 0
+  _trajectory:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _explosionSpeed:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  event_weapondIsReloadingUpdated:
+    m_PersistentCalls:
+      m_Calls: []
+  event_currentAmmunitionUpdated:
+    m_PersistentCalls:
+      m_Calls: []

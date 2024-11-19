@@ -16,7 +16,7 @@ public class Tank_BT : BasicEnemy_BT
             new Sequence(new List<Node>
             {
                 new CheckTargetInTrigger(_attackTrigger),
-                new TaskAttackTarget(this, transform, _weapons[0]),
+                new TaskAttackTarget(this, _weapons[0]),
                 new CheckTargetInTrigger(_stopMovementTrigger),
                 new TaskStopMovement(_agent)
             }),
