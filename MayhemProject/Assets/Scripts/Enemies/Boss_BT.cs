@@ -6,6 +6,7 @@ public class Boss_BT : BasicEnemy_BT
 {
     [SerializeField] private TriggerDetection _longRangeTrigger;
     [SerializeField] private TriggerDetection _closeRangeTrigger;
+    [SerializeField][Range(0, 99)] private int _probabilityThrowable;
 
 
     protected override Node SetupTree()
@@ -17,7 +18,16 @@ public class Boss_BT : BasicEnemy_BT
             {
                 new CheckTargetInTrigger(_closeRangeTrigger),
                 new TaskStopMovement(_agent),
+                new TaskAttackTarget(this, _weapons[2])
+            }),
+            //Throwable attack
+            new Sequence(new List<Node>
+            {
+                new CheckTargetInTrigger(_longRangeTrigger),
+                new CheckWeaponCanShot(this, _weapons[1]),
+                new CheckProbability(_probabilityThrowable),
                 new TaskAttackTarget(this, _weapons[1])
+
             }),
             //Long range attack
             new Sequence(new List<Node>

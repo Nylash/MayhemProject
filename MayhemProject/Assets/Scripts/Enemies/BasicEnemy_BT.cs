@@ -19,7 +19,7 @@ public abstract class BasicEnemy_BT : BehaviourTree.BehaviourTree
     #region VARIABLES
     private float _HP;
     protected NavMeshAgent _agent;
-    protected Dictionary<Data_Weapon, WeaponStatus> _weaponsStatus;
+    private Dictionary<Data_Weapon, WeaponStatus> _weaponsStatus;
     #region ACCESSORS
     #endregion
     #endregion
@@ -61,9 +61,16 @@ public abstract class BasicEnemy_BT : BehaviourTree.BehaviourTree
 
     public void Attack(Data_Weapon weapon)
     {
-        if (CanShot(weapon))
+        if (weapon.WeaponType == Utilities.WeaponType.PROJECTILE)
         {
-            StartCoroutine(Fire(weapon));
+            if (CanShot(weapon))
+            {
+                StartCoroutine(Fire(weapon));
+            }
+        }
+        else
+        {
+            StartCoroutine(Throw(weapon));
         }
     }
 
@@ -101,6 +108,41 @@ public abstract class BasicEnemy_BT : BehaviourTree.BehaviourTree
         _weaponsStatus[weapon] = currentWeaponStatus;
     }
 
+    private IEnumerator Throw(Data_Weapon weapon)
+    {
+        WeaponStatus currentWeaponStatus = GetWeaponStatus(weapon);
+
+        //Directly put IsBetweenShots to true, to avoid simultaneous shot
+        currentWeaponStatus.IsBetweenShots = true;
+        _weaponsStatus[weapon] = currentWeaponStatus;
+
+        currentWeaponStatus.CurrentAmmunition--;
+        //Each loop create one object
+        for (int i = 0; i < weapon.ObjectsByBurst; i++)
+        {
+            //Spawn projectile and configure it
+            GameObject _currentProjectileZone = Instantiate(weapon.Object, transform.position, Quaternion.identity);
+            ThrowableProjectile _currentProjetileZoneBehaviourRef = _currentProjectileZone.GetComponent<ThrowableProjectile>();
+
+            _currentProjetileZoneBehaviourRef.Target = (_root.GetData("Target") as Transform).position;
+            _currentProjetileZoneBehaviourRef.AssociatedWeapon = weapon;
+            _currentProjectileZone.layer = _attackLayer;
+
+            _currentProjectileZone.SetActive(true);
+
+            //Little security to avoid waiting if there is only one object to spawn
+            if (weapon.ObjectsByBurst > 1)
+                yield return new WaitForSeconds(weapon.BurstInternalIntervall);
+        }
+        //Auto reload
+        StartCoroutine(Reload(weapon));
+
+        //Fire rate
+        yield return new WaitForSeconds(weapon.FireRate);
+        currentWeaponStatus.IsBetweenShots = false;
+        _weaponsStatus[weapon] = currentWeaponStatus;
+    }
+    
     public void TakeDamage(float damage)
     {
         _HP -= damage;
@@ -130,7 +172,7 @@ public abstract class BasicEnemy_BT : BehaviourTree.BehaviourTree
         Destroy(gameObject);
     }
 
-    protected bool CanShot(Data_Weapon weapon)
+    public bool CanShot(Data_Weapon weapon)
     {
         //Check if weapon isn't between shots
         if (GetWeaponStatus(weapon).IsBetweenShots)

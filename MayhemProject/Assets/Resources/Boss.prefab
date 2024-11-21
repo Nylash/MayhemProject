@@ -203,9 +203,11 @@ MonoBehaviour:
   _maxHP: 1000
   _weapons:
   - {fileID: 11400000, guid: 94544203597d6a444971597ebdb824e3, type: 2}
+  - {fileID: 11400000, guid: 8ae28bdc98397a24b83f7b007bb6efe4, type: 2}
   - {fileID: 11400000, guid: 0f7ac0b9bf31fb544ae4ff14b055c50d, type: 2}
   _longRangeTrigger: {fileID: 8813508733736590151}
   _closeRangeTrigger: {fileID: 6753381932891213127}
+  _probabilityThrowable: 0
 --- !u!195 &4238484388971000955
 NavMeshAgent:
   m_ObjectHideFlags: 0
