@@ -131,7 +131,7 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
         if(CanShot(weapon))
         {
             //Directly put IsBetweenShots to true, to avoid simultaneous shot
-            weapon.IsBetweenShots = false;
+            weapon.IsBetweenShots = true;
 
             weapon.CurrentAmmunition--;
             //Each loop create one object
