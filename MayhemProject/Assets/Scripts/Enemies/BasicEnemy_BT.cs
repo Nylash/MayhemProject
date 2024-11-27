@@ -5,27 +5,30 @@ using UnityEngine.UI;
 using UnityEngine.AI;
 using System.Collections.Generic;
 using System.Collections;
+using static Utilities;
 
 public abstract class BasicEnemy_BT : BehaviourTree.BehaviourTree
 {
-    [Header("BASE")]
     #region COMPONENTS
+    [Header("COMPOSANTS")]
     [SerializeField] private Image _HPBarFill;
     [SerializeField] private GameObject _HPBar;
     [SerializeField, Layer] protected int _attackLayer;
-    [SerializeField] protected List<Data_Weapon> _weapons = new List<Data_Weapon>();
-    protected NavMeshAgent _agent;
-    protected Dictionary<Data_Weapon, WeaponStatus> _weaponsStatus;
+    [SerializeField] private Vector3 _shootingOffset;
     #endregion
 
     #region VARIABLES
     private float _HP;
+    protected NavMeshAgent _agent;
+    private Dictionary<Data_Weapon, WeaponStatus> _weaponsStatus;
     #region ACCESSORS
     #endregion
     #endregion
 
     #region CONFIGURATION
-    [SerializeField] protected Data_Enemy _enemyData;
+    [Header("CONFIGURATION")]
+    [SerializeField] private float _maxHP;
+    [SerializeField] protected List<Data_Weapon> _weapons = new List<Data_Weapon>();
     #endregion
 
     protected override Node SetupTree()
@@ -45,7 +48,7 @@ public abstract class BasicEnemy_BT : BehaviourTree.BehaviourTree
 
         base.Start();
         
-        _HP = _enemyData.MaxHP;
+        _HP = _maxHP;
         UpdateHPBar();
     }
 
@@ -59,21 +62,33 @@ public abstract class BasicEnemy_BT : BehaviourTree.BehaviourTree
 
     public void Attack(Data_Weapon weapon)
     {
-        if (CanShot(weapon))
+        if (weapon.WeaponType == Utilities.WeaponType.PROJECTILE)
         {
-            StartCoroutine(Fire(weapon));
+            if (CanShot(weapon))
+            {
+                StartCoroutine(Fire(weapon));
+            }
+        }
+        else
+        {
+            StartCoroutine(Throw(weapon));
         }
     }
 
     private IEnumerator Fire(Data_Weapon weapon)
     {
         WeaponStatus currentWeaponStatus = GetWeaponStatus(weapon);
+
+        //Directly put IsBetweenShots to true, to avoid simultaneous shot
+        currentWeaponStatus.IsBetweenShots = true;
+        _weaponsStatus[weapon] = currentWeaponStatus;
+
         //Each loop create one object
         for (int i = 0; i < weapon.ObjectsByBurst; i++)
         {
             currentWeaponStatus.CurrentAmmunition--;
 
-            GameObject _currentProjectile = Instantiate(weapon.Object, transform.position, Quaternion.identity);
+            GameObject _currentProjectile = Instantiate(weapon.Object, transform.position + _shootingOffset, Quaternion.identity);
             ProjectileBehaviour _currentProjectileBehaviourRef = _currentProjectile.GetComponent<ProjectileBehaviour>();
 
             float randomAngle = UnityEngine.Random.Range(-weapon.InaccuracyAngle, weapon.InaccuracyAngle);
@@ -89,13 +104,46 @@ public abstract class BasicEnemy_BT : BehaviourTree.BehaviourTree
             if (weapon.ObjectsByBurst > 1)
                 yield return new WaitForSeconds(weapon.BurstInternalIntervall);
         }
-        currentWeaponStatus.IsBetweenShots = true;
-        _weaponsStatus[weapon] = currentWeaponStatus;
         yield return new WaitForSeconds(weapon.FireRate);
         currentWeaponStatus.IsBetweenShots = false;
         _weaponsStatus[weapon] = currentWeaponStatus;
     }
 
+    private IEnumerator Throw(Data_Weapon weapon)
+    {
+        WeaponStatus currentWeaponStatus = GetWeaponStatus(weapon);
+
+        //Directly put IsBetweenShots to true, to avoid simultaneous shot
+        currentWeaponStatus.IsBetweenShots = true;
+        _weaponsStatus[weapon] = currentWeaponStatus;
+
+        currentWeaponStatus.CurrentAmmunition--;
+        //Each loop create one object
+        for (int i = 0; i < weapon.ObjectsByBurst; i++)
+        {
+            //Spawn projectile and configure it
+            GameObject _currentProjectileZone = Instantiate(weapon.Object, transform.position, Quaternion.identity);
+            ThrowableProjectile _currentProjetileZoneBehaviourRef = _currentProjectileZone.GetComponent<ThrowableProjectile>();
+
+            _currentProjetileZoneBehaviourRef.Target = (_root.GetData("Target") as Transform).position;
+            _currentProjetileZoneBehaviourRef.AssociatedWeapon = weapon;
+            _currentProjectileZone.layer = _attackLayer;
+
+            _currentProjectileZone.SetActive(true);
+
+            //Little security to avoid waiting if there is only one object to spawn
+            if (weapon.ObjectsByBurst > 1)
+                yield return new WaitForSeconds(weapon.BurstInternalIntervall);
+        }
+        //Auto reload
+        StartCoroutine(Reload(weapon));
+
+        //Fire rate
+        yield return new WaitForSeconds(weapon.FireRate);
+        currentWeaponStatus.IsBetweenShots = false;
+        _weaponsStatus[weapon] = currentWeaponStatus;
+    }
+    
     public void TakeDamage(float damage)
     {
         _HP -= damage;
@@ -105,7 +153,7 @@ public abstract class BasicEnemy_BT : BehaviourTree.BehaviourTree
             Die();
         }
 
-        //Give to unit player as target since he damage it
+        //Give to unit player as target since the player damages it
         if(_root.GetData("Target") == null)
         {
             _root.SetData("Target", PlayerHealthManager.Instance.transform);
@@ -114,7 +162,7 @@ public abstract class BasicEnemy_BT : BehaviourTree.BehaviourTree
 
     private void UpdateHPBar()
     {
-        _HPBarFill.fillAmount = _HP / _enemyData.MaxHP;
+        _HPBarFill.fillAmount = _HP / _maxHP;
         if (_HPBarFill.fillAmount < 1)
             _HPBar.SetActive(true);
     }
@@ -125,7 +173,7 @@ public abstract class BasicEnemy_BT : BehaviourTree.BehaviourTree
         Destroy(gameObject);
     }
 
-    protected bool CanShot(Data_Weapon weapon)
+    public bool CanShot(Data_Weapon weapon)
     {
         //Check if weapon isn't between shots
         if (GetWeaponStatus(weapon).IsBetweenShots)
@@ -137,6 +185,12 @@ public abstract class BasicEnemy_BT : BehaviourTree.BehaviourTree
         if (GetWeaponStatus(weapon).IsReloading)
         {
             return false;
+        }
+
+        //Only projectile weapon has ammunition, so we can return true if it's not an projectile weapon
+        if (weapon.WeaponType != WeaponType.PROJECTILE)
+        {
+            return true;
         }
 
         //Check remaining ammunition

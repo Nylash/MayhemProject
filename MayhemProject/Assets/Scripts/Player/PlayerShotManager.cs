@@ -93,6 +93,9 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
 
     private IEnumerator ProjectileWeaponShooting(Data_Weapon weapon)
     {
+        //Directly put IsBetweenShots to true, to avoid simultaneous shot
+        weapon.IsBetweenShots = true;
+
         Vector3 aimDirection = new Vector3(PlayerAimManager.Instance.AimDirection.x, 0, PlayerAimManager.Instance.AimDirection.y);
 
         //Each loop create one object
@@ -120,7 +123,6 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
         StartRecoil(-aimDirection, weapon.Recoil);
 
         //Fire rate
-        weapon.IsBetweenShots = true;
         StartCoroutine(FireRateCoroutine(weapon));
     }
 
@@ -128,6 +130,9 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
     {
         if(CanShot(weapon))
         {
+            //Directly put IsBetweenShots to true, to avoid simultaneous shot
+            weapon.IsBetweenShots = true;
+
             weapon.CurrentAmmunition--;
             //Each loop create one object
             for (int i = 0; i < weapon.ObjectsByBurst; i++)
@@ -150,7 +155,6 @@ public class PlayerShotManager : Singleton<PlayerShotManager>
             StartCoroutine(weapon.Reload());
 
             //Fire rate
-            weapon.IsBetweenShots = false;
             StartCoroutine(FireRateCoroutine(weapon));
        }
     }

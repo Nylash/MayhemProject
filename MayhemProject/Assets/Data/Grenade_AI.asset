@@ -1,0 +1,97 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0bef204357e7644f881c4eea01c8bcf, type: 3}
+  m_Name: Grenade_AI
+  m_EditorClassIdentifier: 
+  _weaponName: Grenade
+  _weaponType: 1
+  _weaponImage: {fileID: 21300000, guid: 5ca82119b94bd2d41978fc24eaac6259, type: 3}
+  _weaponImageSize: 0.7
+  _fireRate: 1
+  _damage: 20
+  _reloadDuration: 10
+  _travelSpeed: 0.075
+  _objectsByBurst: 1
+  _burstInternalIntervall: 0
+  _range: 10
+  _object: {fileID: 1511395521060662260, guid: e80b6a813937d1e499107a3e10f50f3d, type: 3}
+  _recoil: 0
+  _penetration: 0
+  _inaccuracyAngle: 0
+  _magazineSize: 0
+  _splashRange: 0
+  _throwableRadius: 2.5
+  _pattern: 1
+  _distanceBetweenThrowables: 0
+  _trajectory:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 9.735981
+      outSlope: 9.735981
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.026646929
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: -1.3812251
+      outSlope: -1.3812251
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.46780163
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _explosionSpeed:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.15
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.3
+      value: 0.15
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.061435938
+      outWeight: 0.58845305
+    - serializedVersion: 3
+      time: 1
+      value: 0.01
+      inSlope: -0.39153996
+      outSlope: -0.39153996
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.06238767
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  event_weapondIsReloadingUpdated:
+    m_PersistentCalls:
+      m_Calls: []
+  event_currentAmmunitionUpdated:
+    m_PersistentCalls:
+      m_Calls: []
