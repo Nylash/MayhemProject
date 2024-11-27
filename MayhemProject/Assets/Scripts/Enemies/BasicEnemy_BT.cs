@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.AI;
 using System.Collections.Generic;
 using System.Collections;
+using static Utilities;
 
 public abstract class BasicEnemy_BT : BehaviourTree.BehaviourTree
 {
@@ -184,6 +185,12 @@ public abstract class BasicEnemy_BT : BehaviourTree.BehaviourTree
         if (GetWeaponStatus(weapon).IsReloading)
         {
             return false;
+        }
+
+        //Only projectile weapon has ammunition, so we can return true if it's not an projectile weapon
+        if (weapon.WeaponType != WeaponType.PROJECTILE)
+        {
+            return true;
         }
 
         //Check remaining ammunition

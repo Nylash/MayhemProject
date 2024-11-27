@@ -5,6 +5,8 @@ public class CheckProbability : Node
 {
     private int _probability;
     private int _probabilityCheck;
+    private float _evaluationInterval = 1f; // Interval in seconds
+    private float _timeSinceLastCheck = 0f;
 
     public CheckProbability(int probability)
     {
@@ -13,14 +15,25 @@ public class CheckProbability : Node
 
     public override NodeState Evaluate()
     {
-        _probabilityCheck = Random.Range(0, 100);
-        if( _probabilityCheck <= _probability)
+        _timeSinceLastCheck += Time.deltaTime;
+
+        if (_timeSinceLastCheck >= _evaluationInterval)
         {
-            return NodeState.SUCCESS;
+            _timeSinceLastCheck = 0f;
+
+            int probabilityCheck = Random.Range(0, 101);
+
+            if (probabilityCheck < _probability)
+            {
+                return NodeState.SUCCESS;
+            }
+            else
+            {
+                return NodeState.FAILURE;
+            }
         }
-        else
-        {
-            return NodeState.FAILURE;
-        }
+
+        // Outside of the interval, return FAILURE, so SELECTOR can check following SEQUENCE
+        return NodeState.FAILURE;
     }
 }

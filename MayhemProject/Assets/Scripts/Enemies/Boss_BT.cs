@@ -6,7 +6,8 @@ public class Boss_BT : BasicEnemy_BT
 {
     [SerializeField] private TriggerDetection _longRangeTrigger;
     [SerializeField] private TriggerDetection _closeRangeTrigger;
-    [SerializeField][Range(0, 99)] private int _probabilityThrowable;
+    [Tooltip("Probability (in %) to succes every second.")]
+    [SerializeField][Range(0, 100)] private int _probabilityThrowable;
 
 
     protected override Node SetupTree()

@@ -207,7 +207,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 0f7ac0b9bf31fb544ae4ff14b055c50d, type: 2}
   _longRangeTrigger: {fileID: 8813508733736590151}
   _closeRangeTrigger: {fileID: 6753381932891213127}
-  _probabilityThrowable: 0
+  _probabilityThrowable: 10
 --- !u!195 &4238484388971000955
 NavMeshAgent:
   m_ObjectHideFlags: 0
